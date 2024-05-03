@@ -1,3 +1,10 @@
 mpicc -Wall -O3 $1 -o a.o -lm
 shift 1
-mpiexec $@ ./a.o
+n=
+while getopts "n:f:h" opt; do
+    case $opt in
+        n) n=$OPTARG;;
+    esac
+done
+shift 2
+mpiexec -n $n ./a.o $@

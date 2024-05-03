@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <time.h>
-#include <linux/time.h>
+#include <time.h>
 #include <mpi.h>
+#include <math.h>
+#include <getopt.h>
+
+#define DISTRIBUTOR_RANK 0
+
+/** \brief sort type */
+int sortType = 0;
 
 /**
  * \brief Get the process time that has elapsed since last call of this time.
@@ -24,60 +30,92 @@ static double get_delta_time(void)
 
 int main(int argc, char *argv[])
 {
-    int rank, size;
-    int i, j, k;
-    int n = 1000;
-    double *A, *B, *C;
-    double t0, t1;
+    int rank, size, opt, arraySize;
+    char *fileName = NULL;
+    FILE *file;
+    int *array = NULL;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    A = (double *)malloc(n * n * sizeof(double));
-    B = (double *)malloc(n * n * sizeof(double));
-    C = (double *)malloc(n * n * sizeof(double));
-
-    if (rank == 0)
+    if (log2(size) != (int)log2(size))
     {
-        for (i = 0; i < n * n; i++)
+        if (rank == DISTRIBUTOR_RANK)
         {
-            A[i] = 1.0;
-            B[i] = 1.0;
-            C[i] = 0.0;
+            printf("Number of processes must be a power of 2!\n");
         }
+        MPI_Finalize();
+        return EXIT_FAILURE;
     }
 
-    t0 = get_delta_time();
-
-    MPI_Bcast(A, n * n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-    MPI_Bcast(B, n * n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    for (i = rank; i < n; i += size)
+    if (size > 8)
     {
-        for (j = 0; j < n; j++)
+        if (rank == DISTRIBUTOR_RANK)
         {
-            for (k = 0; k < n; k++)
+            printf("Number of processes must be less than or equal to 8!\n");
+        }
+        MPI_Finalize();
+        return EXIT_FAILURE;
+    }
+
+    (void)get_delta_time(); /* start timer */
+
+    if (rank == DISTRIBUTOR_RANK)
+    {
+        while ((opt = getopt(argc, argv, "f:h")) != -1)
+        {
+            switch (opt)
             {
-                C[i * n + j] += A[i * n + k] * B[k * n + j];
+            case 'f': /* file name */
+                fileName = optarg;
+                break;
+            case 'h': /* help */
+                printf("Usage: mpiexec -n $n %s -f <file>\n", argv[0]);
+                MPI_Finalize();
+                return EXIT_SUCCESS;
+            default:
+                printf("Usage: mpiexec -n $n %s -f <file>\n", argv[0]);
+                MPI_Finalize();
+                return EXIT_FAILURE;
             }
         }
+
+        file = fopen(fileName, "rb");
+        if (file == NULL) /* check if file was opened */
+        {
+            printf("Erro ao abrir o arquivo %s\n", fileName);
+            MPI_Finalize();
+            return EXIT_FAILURE;
+        }
+        if (fread(&arraySize, sizeof(int), 1, file) != 1) /* read the size of the array */
+        {
+            printf("Erro ao ler o tamanho do array\n");
+            MPI_Finalize();
+            return EXIT_FAILURE;
+        }
+        array = (int *)malloc(arraySize * sizeof(int)); /* allocate memory for the array */
+        if (fread(array, sizeof(int), arraySize, file) != arraySize) /* read the array */
+        {
+            printf("Erro ao ler o array\n");
+            MPI_Finalize();
+            return EXIT_FAILURE;
+        }
+        fclose(file);
+        if (arraySize != pow(2, (int)log2(arraySize))) /* check if the array size is a power of 2 */
+        {
+            printf("Array size must be a power of 2!\n");
+            MPI_Finalize();
+            return EXIT_FAILURE;
+        }
     }
 
-    MPI_Reduce(C, C, n * n, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
-    t1 = get_delta_time();
-
-    if (rank == 0)
+    if (rank == DISTRIBUTOR_RANK)
     {
-        printf("Elapsed time: %f\n", t1 - t0);
+        printf("Time elapsed: %f s\n", get_delta_time());
     }
-
-    free(A);
-    free(B);
-    free(C);
 
     MPI_Finalize();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

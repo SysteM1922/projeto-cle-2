@@ -1,3 +1,15 @@
+/**
+ * \file dispatcher.c
+ * \brief Dispatcher program for processing files in chunks.
+ *
+ * This file contains the main logic for reading files in chunks, processing them,
+ * and aggregating results. It includes functions for parsing command-line arguments,
+ * setting up file structures, dispatching tasks, and printing results.
+ *
+ * \author Pedro Rasinhas - 103541
+ * \author Guilherme Antunes - 103600
+ */
+
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
@@ -12,7 +24,13 @@ static File* file;             // File structure - indicates the current file be
 static FilesInfo* filesInfo;    // FilesInfo structure - contains the names of the files to be read and the amount of files to be read.  
 static FileData* filesData;     // FileData structure - contains the information of a file.
 
-
+/**
+ * \brief Parses command-line arguments to get the chunk size.
+ *
+ * \param argc The number of command-line arguments.
+ * \param argv The array of command-line arguments.
+ * \return The chunk size specified by the user, or the default chunk size if not specified.
+ */
 int getChunkSize(int argc, char *argv[]) {
     int opt;
     int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
@@ -37,6 +55,14 @@ int getChunkSize(int argc, char *argv[]) {
     return chunkSize;
 }
 
+/**
+ * \brief Parses command-line arguments to extract file names and chunk size.
+ *
+ * \param argc The number of command-line arguments.
+ * \param argv The array of command-line arguments.
+ * \param filesInfo A pointer to the FilesInfo structure to store file names and count.
+ * \return 0 on success, -1 if an error occurs (e.g., invalid chunk size).
+ */
 int parseArgs(int argc, char *argv[], FilesInfo *filesInfo) {
     int opt;
     int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
@@ -68,6 +94,15 @@ int parseArgs(int argc, char *argv[], FilesInfo *filesInfo) {
     return 0;
 }
 
+/**
+ * \brief Sets up the necessary structures for file processing.
+ *
+ * Allocates memory for the FilesInfo structure and parses command-line arguments.
+ *
+ * \param argc The number of command-line arguments.
+ * \param argv The array of command-line arguments.
+ * \return The number of files to be processed, or -1 on error.
+ */
 int setupFiles(int argc, char *argv[]) {
     // Allocate memory for filesInfo
     filesInfo = malloc(sizeof(FilesInfo));
@@ -84,6 +119,15 @@ int setupFiles(int argc, char *argv[]) {
     return filesInfo->nFiles;
 }
 
+/**
+ * \brief Initializes the dispatcher with the number of files and processes.
+ *
+ * Allocates memory for the File and FileData structures and initializes them.
+ *
+ * \param numFiles The number of files to be processed.
+ * \param nProcesses The number of processes to be used for processing.
+ * \return 0 on success, -1 on error.
+ */
 int setupDispatcher(int numFiles, int nProcesses) {
     // Allocate memory for file and FileData
     file = malloc(sizeof(File));
@@ -107,6 +151,42 @@ int setupDispatcher(int numFiles, int nProcesses) {
 }
 
 
+/**
+ * \brief Aggregates results from file processing.
+ *
+ * Updates the FileData structure with the number of words and words with consonants.
+ *
+ * \param fileIdx The index of the file being processed.
+ * \param words The number of words found in the file.
+ * \param consonants The number of words with consonants found in the file.
+ */
+void aggregateResults(int fileIdx, int words, int consonants) {
+    filesData[fileIdx].fileIdx = fileIdx;
+    filesData[fileIdx].wordsCount += words;
+    filesData[fileIdx].wordsWithConsonants += consonants;
+}
+
+
+/**
+ * \brief Prints the aggregated results for each file.
+ *
+ * Outputs the file index, word count, and words with consonants for each file.
+ */
+void printResults() {
+    for (int i = 0; i < filesInfo->nFiles; i++) {
+        printf("FileIdx: %d\n", filesData[i].fileIdx);
+        printf("WordsCount: %d\n", filesData[i].wordsCount);
+        printf("WordsWithConsonants: %d\n", filesData[i].wordsWithConsonants);
+    }
+}
+
+/**
+ * \brief Retrieves the next chunk of data from the current file.
+ *
+ * Reads a chunk of data from the current file, handling file boundaries and UTF-8 encoding.
+ *
+ * \return A Chunk structure containing the chunk data, file index, and position information.
+ */
 Chunk getChunk() {
     Chunk chunk;
     chunk.chunk = malloc(DEFAULT_CHUNK_SIZE);
@@ -117,10 +197,9 @@ Chunk getChunk() {
     
     long fileSize = getFileSize(filesInfo->filenames[file->currentFileIdx]);
     
-
     // check if we have read all the files
     // and if we have reached the end of the last file
-    if (file->currentFileIdx >= filesInfo->nFiles && file->currentPosition >= fileSize) {
+    if (file->currentFileIdx >= filesInfo->nFiles) {
         chunk.isFinal = true;
         chunk.startPosition = -1;
         return chunk;
@@ -210,18 +289,4 @@ Chunk getChunk() {
     printf("Chunk: %s\n", chunk.isFinal ? "true" : "false");
 
     return chunk;
-}
-
-void aggregateResults(int fileIdx, int words, int consonants) {
-    filesData[fileIdx].fileIdx = fileIdx;
-    filesData[fileIdx].wordsCount += words;
-    filesData[fileIdx].wordsWithConsonants += consonants;
-}
-
-void printResults() {
-    for (int i = 0; i < filesInfo->nFiles; i++) {
-        printf("FileIdx: %d\n", filesData[i].fileIdx);
-        printf("WordsCount: %d\n", filesData[i].wordsCount);
-        printf("WordsWithConsonants: %d\n", filesData[i].wordsWithConsonants);
-    }
 }

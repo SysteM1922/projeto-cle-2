@@ -2,6 +2,9 @@
   "files.associations": {
     "utf8_utils.h": "c",
     "stat.h": "c",
-    "workers.h": "c"
+    "workers.h": "c",
+    "stdlib.h": "c",
+    "dispatcher.h": "c",
+    "utils.h": "c"
   }
 }

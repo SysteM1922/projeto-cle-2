@@ -1,3 +1,15 @@
+/**
+ * \file main.c
+ * \brief Main program for parallel file processing using MPI.
+ *
+ * This file contains the main logic for a parallel file processing application using MPI.
+ * It includes the initialization of MPI, setting up file structures, dispatching tasks to worker processes,
+ * and aggregating results. The program processes files in chunks, counting words and words with consonants.
+ *
+ * \author Pedro Rasinhas - 103541
+ * \author Guilherme Antunes - 103600
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
@@ -15,28 +27,78 @@
 #include "utils.h"
 #include "utf8_utils.h"
 
+/**
+ * \brief Array of alphanumeric characters including underscore.
+ *
+ * Used for checking if a character is alphanumeric or underscore.
+ */
 char alphanumeric_chars_underscore[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
 
+
+/**
+ * \brief Size of the alphanumeric_chars_underscore array.
+ */
 int alphanumeric_chars_underscore_array_size = sizeof(alphanumeric_chars_underscore) / sizeof(char);
 
+/**
+ * \brief Array of consonants.
+ *
+ * Used for checking if a character is a consonant.
+ */
 char consonants[] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'};
 
+/**
+ * \brief Size of the consonants array.
+ */
 int consonants_array_size = sizeof(consonants) / sizeof(char);
 
+/**
+ * \brief Array of characters considered outside of words.
+ *
+ * Used for identifying word boundaries.
+ */
 char outside_word_chars[] = {0x20, 0x9, 0xD, 0xA, 0x2d, 0x22, 0x5b, 0x5d, 0x28, 0x29, 0x2e, 0x2c, 0x3a, 0x3b, 0x3f, 0x21};
 
+/**
+ * \brief Size of the outside_word_chars array.
+ */
 int outside_word_array_size = sizeof(outside_word_chars) / sizeof(char);
 
+/**
+ * \brief Gets the elapsed time since the last call of this function.
+ *
+ * \return The elapsed time in seconds.
+ */
 static double get_delta_time(void);
 
+
+/**
+ * \brief Checks if a character is a letter or underscore.
+ *
+ * \param c The wide character to check.
+ * \return 1 if the character is a letter or underscore, 0 otherwise.
+ */
 int isLetter(wchar_t c) {
     return iswalnum(c) || c == L'_';
 }
 
+/**
+ * \brief Checks if a character is a consonant.
+ *
+ * \param c The wide character to check.
+ * \return 1 if the character is a consonant, 0 otherwise.
+ */
 int isConsonant(wchar_t c) {
     return wcschr(L"bcdfghjklmnpqrstvwxyz", c) != NULL;
 }
 
+
+
+/**
+ * \brief Converts a complex letter to its simple form.
+ *
+ * \param letter The wide character to convert.
+ */
 void extractLetter(wchar_t *letter) {
     *letter = towlower(*letter);
     wchar_t *simpleLetters = L"c";
@@ -49,6 +111,18 @@ void extractLetter(wchar_t *letter) {
         }
     }
 }
+
+
+/**
+ * \brief Main function for the parallel file processing application.
+ *
+ * Initializes MPI, sets up file structures, dispatches tasks to worker processes,
+ * and aggregates results.
+ *
+ * \param argc The number of command-line arguments.
+ * \param argv The array of command-line arguments.
+ * \return EXIT_SUCCESS on success, EXIT_FAILURE on error.
+ */
 
 int main(int argc, char *argv[])
 {
@@ -235,7 +309,9 @@ int main(int argc, char *argv[])
                 ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
 
-                int wordCount = 0;
+                ChunkResults res2 = processChunk(receivedChunk);
+
+                /* int wordCount = 0;
                 int inWord = 0;
                 int matchWords = 0;
                 wchar_t word[21];
@@ -302,19 +378,19 @@ int main(int argc, char *argv[])
                         memset(word, '\0', sizeof(word));
                         word_len = 0;
                     }
-                }
+                } */
 
                 // Send the results back to the dispatcher
                 results.fileIdx = receivedChunk->fileIdx;
-                results.wordsCount = wordCount;
-                results.wordsWithConsonants = matchWords;
+                //results.wordsCount = wordCount;
+                //results.wordsWithConsonants = matchWords;
 
-                MPI_Send(&results.fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-                MPI_Send(&results.wordsCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-                MPI_Send(&results.wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&res2.fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&res2.wordsCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&res2.wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
                 // Debug print
-                printf("Worker %d: Processed chunk and Sending results back to dispatcher, fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, results.fileIdx, results.wordsCount, results.wordsWithConsonants);
+                printf("Worker %d: Processed chunk and Sending results back to dispatcher, fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, res2.fileIdx, res2.wordsCount, res2.wordsWithConsonants);
             }
         } while (work);
 

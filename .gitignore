@@ -50,3 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+# Local files
+// expected_results.txt
+// results.txt
+
+.expected_results.txt
+.r.txt

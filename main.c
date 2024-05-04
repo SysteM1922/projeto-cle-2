@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <getopt.h>
+#include <ctype.h>
 
 #include "dispatcher.h"
 #include "workers.h"
@@ -13,7 +14,22 @@
 #include "utf8_utils.h"
 
 
+char alphanumeric_chars_underscore[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
+
+int alphanumeric_chars_underscore_array_size = sizeof(alphanumeric_chars_underscore)/sizeof(char);
+
+char consonants[] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
+
+int consonants_array_size = sizeof(consonants)/sizeof(char);
+
+char outside_word_chars[] = {0x20, 0x9, 0xD, 0xA, 0x2d, 0x22, 0x5b, 0x5d, 0x28, 0x29, 0x2e, 0x2c, 0x3a, 0x3b, 0x3f, 0x21};
+
+int outside_word_array_size = sizeof(outside_word_chars)/sizeof(char);
+
+
+
 static double get_delta_time(void);
+
 int main(int argc, char *argv[]) {
 
     int rank, nProcesses;
@@ -99,7 +115,7 @@ int main(int argc, char *argv[]) {
                 MPI_Send(&cChunk.fileIdx, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.startPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.endPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-                MPI_Send(cChunk.chunk, chunkSize + 50, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
+                MPI_Send(cChunk.chunk, cChunk.endPosition-cChunk.startPosition, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
 
                 // Debug print: Sent chunk to worker
                 printf("Dispatcher: Sent chunk to worker %d, fileIdx: %d\n", i, fileIdx);
@@ -178,7 +194,10 @@ int main(int argc, char *argv[]) {
                 MPI_Recv(&receivedChunk->fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->startPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->endPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(receivedChunk->chunk, chunkSize + 50, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                int startPosition = receivedChunk->startPosition;
+                int endPosition = receivedChunk->endPosition;
+
+                MPI_Recv(receivedChunk->chunk, endPosition - startPosition, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
                 // Debug print
                 // printf("Worker %d: Received chunk, fileIdx: %d\n", rank, fileId);
@@ -186,24 +205,78 @@ int main(int argc, char *argv[]) {
                 // printf("Worker %d: Received chunk, end position: %d\n", rank, endPosition);
                 // printf("Chunk: %s\n", chunk);
 
-                ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
+                int wordsCount = 0;
+                int wordsWithConsonants = 0;
+                chunkSize = receivedChunk->endPosition - receivedChunk->startPosition;
                 // YOU SHOULD DO THE ACTUAL WORK HERE
+                // count the words and the words with 2 equal consonants
+                unsigned char currentByte;
+                unsigned int currentChar = 0;
+                int inside_word = 0;
+                int doubleConsonants = 0;   // flag to check if the current word has at least two instances of the same consonant
+                char wordChars[sizeof(consonants_array_size)];  // array to store the characters of the current word
+                // iterate over the array of bytes
+                for (int i = 0; i < chunkSize; i++) {
+                    currentByte = receivedChunk->chunk[i];
+                    currentChar = currentByte;
 
-                int wordsCount = 69 * receivedChunk->fileIdx;
-                int wordsWithConsonants = 420 * receivedChunk->fileIdx;
-                
-                results.fileIdx = receivedChunk->fileIdx;
-                results.wordsCount = wordsCount;
-                results.wordsWithConsonants = wordsWithConsonants;
+                    short bytesCount = numOfBytesInUTF8(currentByte);   // get the number of bytes for the current character
+
+                    currentChar = currentByte;  
+
+                    for (int j = 1; j < bytesCount; j++) {
+                        currentByte = receivedChunk->chunk[++i];
+                        currentChar = currentChar << 8 | currentByte;   // shift the current character and add the next byte
+                    }
+
+                    // check if the character is a separation character, a whitespace or a punctuation mark
+                    if (isIn(currentChar, outside_word_chars, outside_word_array_size) != 0) {
+                        if (inside_word != 0) {
+                            inside_word = 0;
+                            doubleConsonants = 0;   
+                            memset(wordChars, '\0', sizeof(wordChars));  // reset the array of characters
+
+                        }
+                    } else {
+                        // if its a second consonant or or if it is not an alphanumeric char or underscore, ignore it
+                        if (doubleConsonants != 0  || isIn(currentChar, alphanumeric_chars_underscore, alphanumeric_chars_underscore_array_size) == 0) {
+                            continue;
+                        }
+
+                        // if outside of a workd 
+                        if (inside_word == 0) {
+                            inside_word = 1;
+                            wordsCount++;
+                        }
+
+                        // if the current character is a consonant
+                        if (isIn(currentChar, consonants, consonants_array_size)) {
+                            if (isIn(currentChar, wordChars, consonants_array_size)) {
+                                doubleConsonants = 1;
+                                wordsWithConsonants++;
+                            } else {
+                                // add the character to the array of characters
+                                for (int k = 0; k < consonants_array_size; k++) {
+                                    if (wordChars[k] == '\0') {
+                                        wordChars[k] = currentChar;
+                                        break;
+                                    }
+                                }
+                            }
+                        } 
+
+                    }                
+                }
 
                 // send the results back to the dispatcher
-                MPI_Send(&results.fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-                MPI_Send(&results.wordsCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
-                MPI_Send(&results.wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&receivedChunk->fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&wordsCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+                MPI_Send(&wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
                 // Debug print
-                printf("Worker %d: Processed chunk and Sending results back to dispatcher, fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, results.fileIdx, results.wordsCount, results.wordsWithConsonants);
+                printf("Worker %d: Processed chunk and Sending results back to dispatcher, \
+                            fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, receivedChunk->fileIdx, wordsCount, wordsWithConsonants);
 
             }
         } while (work);

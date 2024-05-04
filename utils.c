@@ -23,3 +23,11 @@ long getFileSize(const char *fileName) {
 }
 
 
+bool isIn(unsigned int currentChar, char *consonants, int size) {
+    for (int i = 0; i < size; i++) {
+        if (currentChar == consonants[i]) {
+            return true;
+        }
+    }
+    return false;
+}

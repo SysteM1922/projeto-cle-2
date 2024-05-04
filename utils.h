@@ -5,4 +5,7 @@
 
 
 long getFileSize(const char *fileName);
+
+bool isIn(unsigned int currentChar, char *consonants, int size);
+
 #endif

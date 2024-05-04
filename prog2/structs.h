@@ -14,7 +14,7 @@
 
 #include <stdbool.h>
 
-/** \brief struct SubArray */
+/** \brief struct WorkerArgs */
 typedef struct
 {
     int direction;

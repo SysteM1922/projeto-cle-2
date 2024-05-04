@@ -34,6 +34,9 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    int chunkSize = getChunkSize(argc, argv);
+    // printf("Chunk size: %d\n", chunkSize);
+
     // start timer 
     get_delta_time();
 
@@ -54,6 +57,7 @@ int main(int argc, char *argv[]) {
             MPI_Finalize();
             return EXIT_FAILURE;
         }
+
 
         printf("SETUP TIME: %f\n\n\n", get_delta_time());
 
@@ -95,7 +99,7 @@ int main(int argc, char *argv[]) {
                 MPI_Send(&cChunk.fileIdx, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.startPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.endPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-                MPI_Send(cChunk.chunk, DEFAULT_CHUNK_SIZE, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
+                MPI_Send(cChunk.chunk, chunkSize + 50, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
 
                 // Debug print: Sent chunk to worker
                 printf("Dispatcher: Sent chunk to worker %d, fileIdx: %d\n", i, fileIdx);
@@ -169,12 +173,12 @@ int main(int argc, char *argv[]) {
 
                 // receive the fileId, the start position, the end position and the chunk in different messages
                 Chunk* receivedChunk = calloc(1, sizeof(Chunk));
-                receivedChunk->chunk = calloc(DEFAULT_CHUNK_SIZE, sizeof(unsigned char));
+                receivedChunk->chunk = calloc(chunkSize + 50, sizeof(unsigned char));
 
                 MPI_Recv(&receivedChunk->fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->startPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->endPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(receivedChunk->chunk, DEFAULT_CHUNK_SIZE, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(receivedChunk->chunk, chunkSize + 50, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
                 // Debug print
                 // printf("Worker %d: Received chunk, fileIdx: %d\n", rank, fileId);
@@ -184,6 +188,7 @@ int main(int argc, char *argv[]) {
 
                 ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
+                // YOU SHOULD DO THE ACTUAL WORK HERE
 
                 int wordsCount = 69 * receivedChunk->fileIdx;
                 int wordsWithConsonants = 420 * receivedChunk->fileIdx;

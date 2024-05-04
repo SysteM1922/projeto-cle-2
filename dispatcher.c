@@ -43,6 +43,30 @@ int parseArgs(int argc, char *argv[], FilesInfo *filesInfo) {
     return 0;
 }
 
+int getChunkSize(int argc, char *argv[]) {
+    int opt;
+    int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
+
+    // Parse command-line arguments
+    while ((opt = getopt(argc, argv, "s:"))!= -1) {
+        switch (opt) {
+            case 's':
+                chunkSize = atoi(optarg);
+                if (chunkSize <= 0) {
+                    fprintf(stderr, "Chunk size must be a positive integer\n");
+                    return -1;
+                }
+                break;
+            case '?':
+                printf("invalid option\n");
+                printf("Usage: %s -s <size_chunk> <filename1> <filename2> ...\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    return chunkSize;
+}
+
 int setupFiles(int argc, char *argv[]) {
     // Allocate memory for filesInfo
     filesInfo = malloc(sizeof(FilesInfo));
@@ -79,25 +103,6 @@ int setupDispatcher(int numFiles, int nProcesses) {
     file->fileSize = getFileSize(filesInfo->filenames[file->currentFileIdx]);
 
     return 0;
-}
-
-short numOfBytesInUTF8(unsigned char character) {
-
-    unsigned int characterAsInt = character;
-    unsigned int mostSignificantNibble = characterAsInt >> 4;
-
-    if (mostSignificantNibble <= 0x7) {
-        return 1;
-    } else if (mostSignificantNibble >= 0xC && mostSignificantNibble <= 0xD) {
-        return 2;
-    } else if (mostSignificantNibble == 0xE) {
-        return 3;
-    } else if (mostSignificantNibble == 0xF) {
-        return 4;
-    } else {
-        return -1;
-    }
-
 }
 
 

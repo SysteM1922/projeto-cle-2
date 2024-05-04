@@ -21,3 +21,5 @@ long getFileSize(const char *fileName) {
 
     return fileSize;
 }
+
+

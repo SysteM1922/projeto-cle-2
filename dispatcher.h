@@ -40,7 +40,7 @@ typedef struct Chunk {
     int endPosition;   	        /**< End position of the chunk in the file */
 } Chunk;
 
-
+int getChunkSize();
 int setupFiles(int argc, char *argv[]);
 int setupDispatcher(int numFiles, int nProcesses);
 Chunk getChunk();

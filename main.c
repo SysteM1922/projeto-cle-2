@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
                 unsigned int currentChar = 0;
                 int inside_word = 0;
                 int doubleConsonants = 0;   // flag to check if the current word has at least two instances of the same consonant
-                char wordChars[sizeof(consonants_array_size)];  // array to store the characters of the current word
+                char wordChars[sizeof(consonants_array_size)];  // array to store the consonants of the current word
                 // iterate over the array of bytes
                 for (int i = 0; i < chunkSize; i++) {
                     currentByte = receivedChunk->chunk[i];

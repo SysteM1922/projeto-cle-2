@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        printf("SETUP TIME: %f\n\n\n", get_delta_time());
+        // printf("SETUP TIME: %f\n\n\n", get_delta_time());
 
         // --------------- Actual work ---------------
 
@@ -196,10 +196,10 @@ int main(int argc, char *argv[])
                 // get the perfected chunk
                 cChunk = getChunk();
                 fileIdx = cChunk.fileIdx;
-                printf("\n\nDispatcher: Got chunk %d, fileIdx: %d\n", cChunk.fileIdx, fileIdx);
-                printf("Dispatcher: Chunk start position: %d\n", cChunk.startPosition);
-                printf("Dispatcher: Chunk end position: %d\n", cChunk.endPosition);
-                printf("Dispatcher: Chunk isFinal: %d\n", cChunk.isFinal);
+                // printf("\n\nDispatcher: Got chunk %d, fileIdx: %d\n", cChunk.fileIdx, fileIdx);
+                // printf("Dispatcher: Chunk start position: %d\n", cChunk.startPosition);
+                // printf("Dispatcher: Chunk end position: %d\n", cChunk.endPosition);
+                // printf("Dispatcher: Chunk isFinal: %d\n", cChunk.isFinal);
 
                 if (cChunk.isFinal || cChunk.startPosition == -1)
                 {
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
                 // send a message to worker i with a flag to know if i have work to do (work)
                 MPI_Send(&work, 1, MPI_C_BOOL, i, 0, MPI_COMM_WORLD);
 
-                printf("Dispatcher: Sent work flag to worker %d\n", i);
+                // printf("Dispatcher: Sent work flag to worker %d\n", i);
 
                 // send the actual chunk to worker i
                 // must send the fileIdx and then the chunk
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
                 MPI_Send(cChunk.chunk, chunkSize, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
 
                 // Debug print: Sent chunk to worker
-                printf("Dispatcher: Sent chunk to worker %d, fileIdx: %d\n", i, fileIdx);
+                // printf("Dispatcher: Sent chunk to worker %d, fileIdx: %d\n", i, fileIdx);
 
                 // receive results from worker i (non-blocking wa)
                 ChunkResults *results = calloc(1, sizeof(ChunkResults));
@@ -230,15 +230,15 @@ int main(int argc, char *argv[])
                 MPI_Irecv(&results->wordsWithConsonants, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &requests[currentIndex + 2]);
 
                 // Debug print: Deserialized results
-                printf("Dispatcher: Received results from worker %d\n", i);
-                printf("Dispatcher: Results for fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", results->fileIdx, results->wordsCount, results->wordsWithConsonants);
+                // printf("Dispatcher: Received results from worker %d\n", i);
+                // printf("Dispatcher: Results for fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", results->fileIdx, results->wordsCount, results->wordsWithConsonants);
 
                 // store results
                 // must store the results to an array of ChunkResults
                 resultsArray[nMessages] = results;
 
                 // Debug print: Stored results
-                printf("Dispatcher: Stored results for fileIdx: %d, worker: %d\n", results->fileIdx, i);
+                // printf("Dispatcher: Stored results for fileIdx: %d, worker: %d\n", results->fileIdx, i);
                 nMessages++;
             }
 
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
         {
             bool work = false;
             MPI_Send(&work, 1, MPI_C_BOOL, i, 0, MPI_COMM_WORLD);
-            printf("Sent stop message to worker %d\n", i);
+            // printf("Sent stop message to worker %d\n", i);
         }
 
         // not sure if this is needed
@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
         {
             if (requests[i] == MPI_REQUEST_NULL)
             {
-                fprintf(stderr, "Invalid MPI_Request at index %d\n", i);
+                // fprintf(stderr, "Invalid MPI_Request at index %d\n", i);
                 MPI_Abort(MPI_COMM_WORLD, 1); // Abort if any request is invalid
             }
         }
@@ -301,10 +301,10 @@ int main(int argc, char *argv[])
                 MPI_Recv(receivedChunk->chunk, chunkSize, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
                 // Debug print
-                printf("Worker %d: Received chunk, fileIdx: %d\n", rank, receivedChunk->fileIdx);
-                printf("Worker %d: Received chunk, start position: %d\n", rank, receivedChunk->startPosition);
-                printf("Worker %d: Received chunk, end position: %d\n", rank, receivedChunk->endPosition);
-                printf("ChunkSize: %d\n", chunkSize);
+                // printf("Worker %d: Received chunk, fileIdx: %d\n", rank, receivedChunk->fileIdx);
+                // printf("Worker %d: Received chunk, start position: %d\n", rank, receivedChunk->startPosition);
+                // printf("Worker %d: Received chunk, end position: %d\n", rank, receivedChunk->endPosition);
+                // printf("ChunkSize: %d\n", chunkSize);
 
                 ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
@@ -390,12 +390,12 @@ int main(int argc, char *argv[])
                 MPI_Send(&res2.wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
                 // Debug print
-                printf("Worker %d: Processed chunk and Sending results back to dispatcher, fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, res2.fileIdx, res2.wordsCount, res2.wordsWithConsonants);
+                // printf("Worker %d: Processed chunk and Sending results back to dispatcher, fileIdx: %d, wordsCount: %d, wordsWithConsonants: %d\n", rank, res2.fileIdx, res2.wordsCount, res2.wordsWithConsonants);
             }
         } while (work);
 
         // Debug print
-        printf("Worker %d: Finished processing chunks\n", rank);
+        // printf("Worker %d: Finished processing chunks\n", rank);
     }
 
     MPI_Finalize();

@@ -174,7 +174,7 @@ void aggregateResults(int fileIdx, int words, int consonants) {
  */
 void printResults() {
     for (int i = 0; i < filesInfo->nFiles; i++) {
-        printf("FileIdx: %d\n", filesData[i].fileIdx);
+        printf("\nFileIdx: %d\n", filesData[i].fileIdx);
         printf("WordsCount: %d\n", filesData[i].wordsCount);
         printf("WordsWithConsonants: %d\n", filesData[i].wordsWithConsonants);
     }
@@ -282,11 +282,11 @@ Chunk getChunk() {
 
     // debug print
     // printf("Chunk: %s\n", chunk.chunk);
-    printf("\n\nFileIdx: %d\n", chunk.fileIdx);
-    printf("FileSize: %ld\n", fileSize);
-    printf("StartPosition: %d\n", chunk.startPosition);
-    printf("EndPosition: %d\n", chunk.endPosition);
-    printf("Chunk: %s\n", chunk.isFinal ? "true" : "false");
+    // printf("\n\nFileIdx: %d\n", chunk.fileIdx);
+    // printf("FileSize: %ld\n", fileSize);
+    // printf("StartPosition: %d\n", chunk.startPosition);
+    // printf("EndPosition: %d\n", chunk.endPosition);
+    // printf("Chunk: %s\n", chunk.isFinal ? "true" : "false");
 
     return chunk;
 }

@@ -17,7 +17,7 @@
 /**
  *  \brief Function swap.
  *
- *  Its role is to swap two elements of an array.
+ *  Its role is to swap two elements of an integer array.
  *
  *  \param a pointer to the first element
  *  \param b pointer to the second element
@@ -37,7 +37,7 @@ void swap(int *a, int *b, int sortType)
 /**
  *  \brief Function merge.
  *
- *  Its role is to merge two arrays.
+ *  Its role is to merge two integer arrays.
  *
  *  \param array pointer to the array
  *  \param size array size
@@ -62,7 +62,7 @@ void merge(int *array, int size, int sortType)
 /**
  *  \brief Function sort.
  *
- *  Its role is to sort an array.
+ *  Its role is to sort an integer array.
  *
  *  \param array pointer to the array
  *  \param size array size
@@ -83,7 +83,7 @@ void sort(int *array, int size, int sortType)
 /**
  *  \brief Function validateArray.
  *
- *  Its role is to validate an array.
+ *  Its role is to validate an integer array.
  *
  *  \param array pointer to the array
  *  \param size array size

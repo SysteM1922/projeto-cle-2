@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
                 MPI_Send(&cChunk.fileIdx, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.startPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                 MPI_Send(&cChunk.endPosition, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-                MPI_Send(cChunk.chunk, DEFAULT_CHUNK_SIZE, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
+                MPI_Send(cChunk.chunk, chunkSize, MPI_UNSIGNED_CHAR, i, 0, MPI_COMM_WORLD);
 
                 // Debug print: Sent chunk to worker
                 printf("Dispatcher: Sent chunk to worker %d, fileIdx: %d\n", i, fileIdx);
@@ -190,7 +190,7 @@ int main(int argc, char *argv[]) {
                 MPI_Recv(&receivedChunk->fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->startPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->endPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                MPI_Recv(receivedChunk->chunk, DEFAULT_CHUNK_SIZE, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(receivedChunk->chunk, chunkSize, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
                 // Debug print
                 // printf("Worker %d: Received chunk, fileIdx: %d\n", rank, fileId);
@@ -201,57 +201,52 @@ int main(int argc, char *argv[]) {
                 ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
 
-                 int wordsCount = 0;
+                // Process the chunk
+                int wordsCount = 0;
                 int wordsWithConsonants = 0;
-                chunkSize = receivedChunk->endPosition - receivedChunk->startPosition;
-                // YOU SHOULD DO THE ACTUAL WORK HERE
-                // count the words and the words with 2 equal consonants
-                unsigned char currentByte;
-                unsigned int currentChar = 0;
-                int inside_word = 0;
-                int doubleConsonants = 0;   // flag to check if the current word has at least two instances of the same consonant
-                char wordChars[sizeof(consonants_array_size)];  // array to store the consonants of the current word
-                // iterate over the array of bytes
+
+                // Flags to track if inside a word and if current word has double consonants
+                int insideWord = 0;
+                int doubleConsonants = 0;
+
+                // Temporary storage for characters of the current word
+                char wordChars[sizeof(consonants)]; 
+
+                // Iterate over the chunk
                 for (int i = 0; i < chunkSize; i++) {
-                    currentByte = receivedChunk->chunk[i];
-                    currentChar = currentByte;
+                    unsigned char currentByte = receivedChunk->chunk[i];
+                    unsigned int currentChar = currentByte;
 
-                    short bytesCount = numOfBytesInUTF8(currentByte);   // get the number of bytes for the current character
-
-                    currentChar = currentByte;  
+                    short bytesCount = numOfBytesInUTF8(currentByte); // Get the number of bytes for the current character
 
                     for (int j = 1; j < bytesCount; j++) {
                         currentByte = receivedChunk->chunk[++i];
-                        currentChar = currentChar << 8 | currentByte;   // shift the current character and add the next byte
+                        currentChar = (currentChar << 8) | currentByte; // Shift the current character and add the next byte
                     }
 
-                    // check if the character is a separation character, a whitespace or a punctuation mark
+                    // Check if the character is a separation character (whitespace or punctuation)
                     if (isIn(currentChar, outside_word_chars, outside_word_array_size) != 0) {
-                        if (inside_word != 0) {
-                            inside_word = 0;
-                            doubleConsonants = 0;   
-                            memset(wordChars, '\0', sizeof(wordChars));  // reset the array of characters
-
+                        // If inside a word, mark the end of the word
+                        if (insideWord) {
+                            insideWord = 0;
+                            doubleConsonants = 0;
                         }
                     } else {
-                        // if its a second consonant or or if it is not an alphanumeric char or underscore, ignore it
-                        if (doubleConsonants != 0  || isIn(currentChar, alphanumeric_chars_underscore, alphanumeric_chars_underscore_array_size) == 0) {
-                            continue;
-                        }
-
-                        // if outside of a workd 
-                        if (inside_word == 0) {
-                            inside_word = 1;
+                        // If not a separation character
+                        if (!insideWord) {
+                            // Mark the start of a new word
+                            insideWord = 1;
                             wordsCount++;
+                            memset(wordChars, '\0', sizeof(wordChars)); // Reset the array of characters
                         }
 
-                        // if the current character is a consonant
+                        // If the character is a consonant
                         if (isIn(currentChar, consonants, consonants_array_size)) {
                             if (isIn(currentChar, wordChars, consonants_array_size)) {
+                                // If the current word already has this consonant, mark double consonants
                                 doubleConsonants = 1;
-                                wordsWithConsonants++;
                             } else {
-                                // add the character to the array of characters
+                                // Add the consonant to the array of characters for the current word
                                 for (int k = 0; k < consonants_array_size; k++) {
                                     if (wordChars[k] == '\0') {
                                         wordChars[k] = currentChar;
@@ -259,16 +254,20 @@ int main(int argc, char *argv[]) {
                                     }
                                 }
                             }
-                        } 
-
-                    }                
+                        }
+                    }
                 }
-                
+
+                // If the current word has double consonants, increment wordsWithConsonants count
+                if (doubleConsonants) {
+                    wordsWithConsonants++;
+                }
+
+                // Send the results back to the dispatcher
                 results.fileIdx = receivedChunk->fileIdx;
                 results.wordsCount = wordsCount;
                 results.wordsWithConsonants = wordsWithConsonants;
 
-                // send the results back to the dispatcher
                 MPI_Send(&results.fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
                 MPI_Send(&results.wordsCount, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
                 MPI_Send(&results.wordsWithConsonants, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);

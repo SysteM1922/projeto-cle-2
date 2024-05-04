@@ -1,0 +1,209 @@
+\hypertarget{utf8__utils_8h}{}\doxysection{utf8\+\_\+utils.\+h File Reference}
+\label{utf8__utils_8h}\index{utf8\_utils.h@{utf8\_utils.h}}
+
+
+Header file for UTF-\/8 utility functions.  
+
+
+{\ttfamily \#include \char`\"{}dispatcher.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}workers.\+h\char`\"{}}\newline
+Include dependency graph for utf8\+\_\+utils.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{utf8__utils_8h_aa63fb778c4facc70d76bb2de4851ec02}{is\+Separation\+Character}} (unsigned int character)
+\begin{DoxyCompactList}\small\item\em Checks if a character is a separation character. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utf8__utils_8h_a895de45cb526cf00888743199e9a4ef1}{is\+White\+Space}} (unsigned int character)
+\begin{DoxyCompactList}\small\item\em Checks if a character is a whitespace character. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utf8__utils_8h_a30dc4922e67ce7e57ce078546582796b}{is\+Punctuation\+Mark}} (unsigned int character)
+\begin{DoxyCompactList}\small\item\em Checks if a character is a punctuation mark. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utf8__utils_8h_a4e92d279703f2b9eb08b09f6d626b4db}{is\+Aggregation\+Mark}} (unsigned int character)
+\begin{DoxyCompactList}\small\item\em Checks if a character is an aggregation mark. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utf8__utils_8h_ac5d0001a1a1fbd08c931855c77101685}{is\+Alphanumeric}} (unsigned int character)
+\begin{DoxyCompactList}\small\item\em Checks if a character is alphanumeric. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utf8__utils_8h_a7424ea220247ebba9526b0f439ab8efc}{num\+Of\+Bytes\+In\+UTF8}} (unsigned char character)
+\begin{DoxyCompactList}\small\item\em Determines the number of bytes in a UTF-\/8 character. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utf8__utils_8h_a3167bbc8b54f663697f55abe38cb3918}{utf8\+\_\+to\+\_\+codepoint}} (unsigned char $\ast$bytes, int num\+\_\+bytes)
+\begin{DoxyCompactList}\small\item\em Converts UTF-\/8 bytes to a Unicode codepoint. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{utf8__utils_8h_ae061c8b2f36d9256e7bf71e36368daa2}{to\+\_\+lower\+\_\+case}} (int c)
+\begin{DoxyCompactList}\small\item\em Converts a character to lowercase. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for UTF-\/8 utility functions. 
+
+This header file declares utility functions for handling UTF-\/8 encoded strings. It includes functions for identifying separation characters, whitespace, punctuation marks, aggregation marks, determining the number of bytes in a UTF-\/8 character, checking if a character is alphanumeric, converting UTF-\/8 bytes to a Unicode codepoint, and converting characters to lowercase. These utilities are essential for text processing tasks in parallel processing applications.
+
+\begin{DoxyAuthor}{Author}
+Pedro Rasinhas -\/ 103541 
+
+Guilherme Antunes -\/ 103600 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utf8__utils_8h_a4e92d279703f2b9eb08b09f6d626b4db}\label{utf8__utils_8h_a4e92d279703f2b9eb08b09f6d626b4db}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!isAggregationMark@{isAggregationMark}}
+\index{isAggregationMark@{isAggregationMark}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{isAggregationMark()}{isAggregationMark()}}
+{\footnotesize\ttfamily bool is\+Aggregation\+Mark (\begin{DoxyParamCaption}\item[{unsigned int}]{character }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is an aggregation mark. 
+
+Determines if a given character is an aggregation mark, such as apostrophes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The Unicode codepoint of the character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is an aggregation mark, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_ac5d0001a1a1fbd08c931855c77101685}\label{utf8__utils_8h_ac5d0001a1a1fbd08c931855c77101685}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!isAlphanumeric@{isAlphanumeric}}
+\index{isAlphanumeric@{isAlphanumeric}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{isAlphanumeric()}{isAlphanumeric()}}
+{\footnotesize\ttfamily bool is\+Alphanumeric (\begin{DoxyParamCaption}\item[{unsigned int}]{character }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is alphanumeric. 
+
+Determines if a given character is alphanumeric, including numbers, letters, and specific special characters.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The Unicode codepoint of the character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is alphanumeric, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_a30dc4922e67ce7e57ce078546582796b}\label{utf8__utils_8h_a30dc4922e67ce7e57ce078546582796b}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!isPunctuationMark@{isPunctuationMark}}
+\index{isPunctuationMark@{isPunctuationMark}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{isPunctuationMark()}{isPunctuationMark()}}
+{\footnotesize\ttfamily bool is\+Punctuation\+Mark (\begin{DoxyParamCaption}\item[{unsigned int}]{character }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is a punctuation mark. 
+
+Determines if a given character is a punctuation mark, such as periods, commas, or question marks.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The Unicode codepoint of the character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is a punctuation mark, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_aa63fb778c4facc70d76bb2de4851ec02}\label{utf8__utils_8h_aa63fb778c4facc70d76bb2de4851ec02}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!isSeparationCharacter@{isSeparationCharacter}}
+\index{isSeparationCharacter@{isSeparationCharacter}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{isSeparationCharacter()}{isSeparationCharacter()}}
+{\footnotesize\ttfamily bool is\+Separation\+Character (\begin{DoxyParamCaption}\item[{unsigned int}]{character }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is a separation character. 
+
+Determines if a given character is a separation character, such as hyphens, quotes, or brackets.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The Unicode codepoint of the character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is a separation character, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_a895de45cb526cf00888743199e9a4ef1}\label{utf8__utils_8h_a895de45cb526cf00888743199e9a4ef1}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!isWhiteSpace@{isWhiteSpace}}
+\index{isWhiteSpace@{isWhiteSpace}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{isWhiteSpace()}{isWhiteSpace()}}
+{\footnotesize\ttfamily bool is\+White\+Space (\begin{DoxyParamCaption}\item[{unsigned int}]{character }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is a whitespace character. 
+
+Determines if a given character is a whitespace character, such as space, tab, or newline.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The Unicode codepoint of the character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is a whitespace character, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_a7424ea220247ebba9526b0f439ab8efc}\label{utf8__utils_8h_a7424ea220247ebba9526b0f439ab8efc}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!numOfBytesInUTF8@{numOfBytesInUTF8}}
+\index{numOfBytesInUTF8@{numOfBytesInUTF8}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{numOfBytesInUTF8()}{numOfBytesInUTF8()}}
+{\footnotesize\ttfamily int num\+Of\+Bytes\+In\+UTF8 (\begin{DoxyParamCaption}\item[{unsigned char}]{character }\end{DoxyParamCaption})}
+
+
+
+Determines the number of bytes in a UTF-\/8 character. 
+
+Calculates the number of bytes that make up a UTF-\/8 character based on the first byte.
+
+
+\begin{DoxyParams}{Parameters}
+{\em character} & The first byte of the UTF-\/8 character. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of bytes in the UTF-\/8 character, or -\/1 if the character is invalid. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_ae061c8b2f36d9256e7bf71e36368daa2}\label{utf8__utils_8h_ae061c8b2f36d9256e7bf71e36368daa2}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!to\_lower\_case@{to\_lower\_case}}
+\index{to\_lower\_case@{to\_lower\_case}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{to\_lower\_case()}{to\_lower\_case()}}
+{\footnotesize\ttfamily int to\+\_\+lower\+\_\+case (\begin{DoxyParamCaption}\item[{int}]{c }\end{DoxyParamCaption})}
+
+
+
+Converts a character to lowercase. 
+
+Converts a given character to its lowercase equivalent if it is an uppercase letter.
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The Unicode codepoint of the character to convert. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The lowercase equivalent of the character, or the character itself if it is not an uppercase letter. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utf8__utils_8h_a3167bbc8b54f663697f55abe38cb3918}\label{utf8__utils_8h_a3167bbc8b54f663697f55abe38cb3918}} 
+\index{utf8\_utils.h@{utf8\_utils.h}!utf8\_to\_codepoint@{utf8\_to\_codepoint}}
+\index{utf8\_to\_codepoint@{utf8\_to\_codepoint}!utf8\_utils.h@{utf8\_utils.h}}
+\doxysubsubsection{\texorpdfstring{utf8\_to\_codepoint()}{utf8\_to\_codepoint()}}
+{\footnotesize\ttfamily int utf8\+\_\+to\+\_\+codepoint (\begin{DoxyParamCaption}\item[{unsigned char $\ast$}]{bytes,  }\item[{int}]{num\+\_\+bytes }\end{DoxyParamCaption})}
+
+
+
+Converts UTF-\/8 bytes to a Unicode codepoint. 
+
+Converts a sequence of UTF-\/8 bytes to their corresponding Unicode codepoint.
+
+
+\begin{DoxyParams}{Parameters}
+{\em bytes} & The array of UTF-\/8 bytes. \\
+\hline
+{\em num\+\_\+bytes} & The number of bytes in the sequence. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The Unicode codepoint, or -\/1 if the number of bytes is invalid. 
+\end{DoxyReturn}

@@ -1,0 +1,180 @@
+\hypertarget{dispatcher_8c}{}\doxysection{dispatcher.\+c File Reference}
+\label{dispatcher_8c}\index{dispatcher.c@{dispatcher.c}}
+
+
+Dispatcher program for processing files in chunks.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$getopt.\+h$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}dispatcher.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utf8\+\_\+utils.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+Include dependency graph for dispatcher.\+c\+:
+% FIG 0
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{dispatcher_8c_aa8d6564887ae1cca4f7559e90a1cba4c}{get\+Chunk\+Size}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Parses command-\/line arguments to get the chunk size. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dispatcher_8c_a2f7bc36b6fadf3e081884327dfff4d08}{parse\+Args}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]}, \mbox{\hyperlink{structFilesInfo}{Files\+Info}} $\ast$files\+Info)
+\begin{DoxyCompactList}\small\item\em Parses command-\/line arguments to extract file names and chunk size. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dispatcher_8c_a8dd93731ba1e41c6d760726b61ea0b23}{setup\+Files}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Sets up the necessary structures for file processing. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dispatcher_8c_a2d20316ca03953a2feaba3cccd5966f0}{setup\+Dispatcher}} (int num\+Files, int n\+Processes)
+\begin{DoxyCompactList}\small\item\em Initializes the dispatcher with the number of files and processes. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{dispatcher_8c_a822a6c0fa5475c216669fd0c79aaa2ae}{aggregate\+Results}} (int file\+Idx, int words, int \mbox{\hyperlink{main_8c_ad192c56aa6f5571f33d369a589bf309d}{consonants}})
+\begin{DoxyCompactList}\small\item\em Aggregates results from file processing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{dispatcher_8c_a7227a27d959ebccebb6f10536cf4aa75}{print\+Results}} ()
+\begin{DoxyCompactList}\small\item\em Prints the aggregated results for each file. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structChunk}{Chunk}} \mbox{\hyperlink{dispatcher_8c_aa9c6812e87e8fbfa50fc406beeb117e5}{get\+Chunk}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the next chunk of data from the current file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Dispatcher program for processing files in chunks. 
+
+This file contains the main logic for reading files in chunks, processing them, and aggregating results. It includes functions for parsing command-\/line arguments, setting up file structures, dispatching tasks, and printing results.
+
+\begin{DoxyAuthor}{Author}
+Pedro Rasinhas -\/ 103541 
+
+Guilherme Antunes -\/ 103600 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{dispatcher_8c_a822a6c0fa5475c216669fd0c79aaa2ae}\label{dispatcher_8c_a822a6c0fa5475c216669fd0c79aaa2ae}} 
+\index{dispatcher.c@{dispatcher.c}!aggregateResults@{aggregateResults}}
+\index{aggregateResults@{aggregateResults}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{aggregateResults()}{aggregateResults()}}
+{\footnotesize\ttfamily void aggregate\+Results (\begin{DoxyParamCaption}\item[{int}]{file\+Idx,  }\item[{int}]{words,  }\item[{int}]{consonants }\end{DoxyParamCaption})}
+
+
+
+Aggregates results from file processing. 
+
+Updates the \mbox{\hyperlink{structFileData}{File\+Data}} structure with the number of words and words with consonants.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Idx} & The index of the file being processed. \\
+\hline
+{\em words} & The number of words found in the file. \\
+\hline
+{\em consonants} & The number of words with consonants found in the file. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{dispatcher_8c_aa9c6812e87e8fbfa50fc406beeb117e5}\label{dispatcher_8c_aa9c6812e87e8fbfa50fc406beeb117e5}} 
+\index{dispatcher.c@{dispatcher.c}!getChunk@{getChunk}}
+\index{getChunk@{getChunk}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{getChunk()}{getChunk()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structChunk}{Chunk}} get\+Chunk (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Retrieves the next chunk of data from the current file. 
+
+Reads a chunk of data from the current file, handling file boundaries and UTF-\/8 encoding.
+
+\begin{DoxyReturn}{Returns}
+A \mbox{\hyperlink{structChunk}{Chunk}} structure containing the chunk data, file index, and position information. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8c_aa8d6564887ae1cca4f7559e90a1cba4c}\label{dispatcher_8c_aa8d6564887ae1cca4f7559e90a1cba4c}} 
+\index{dispatcher.c@{dispatcher.c}!getChunkSize@{getChunkSize}}
+\index{getChunkSize@{getChunkSize}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{getChunkSize()}{getChunkSize()}}
+{\footnotesize\ttfamily int get\+Chunk\+Size (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Parses command-\/line arguments to get the chunk size. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The chunk size specified by the user, or the default chunk size if not specified. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8c_a2f7bc36b6fadf3e081884327dfff4d08}\label{dispatcher_8c_a2f7bc36b6fadf3e081884327dfff4d08}} 
+\index{dispatcher.c@{dispatcher.c}!parseArgs@{parseArgs}}
+\index{parseArgs@{parseArgs}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{parseArgs()}{parseArgs()}}
+{\footnotesize\ttfamily int parse\+Args (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]},  }\item[{\mbox{\hyperlink{structFilesInfo}{Files\+Info}} $\ast$}]{files\+Info }\end{DoxyParamCaption})}
+
+
+
+Parses command-\/line arguments to extract file names and chunk size. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line arguments. \\
+\hline
+{\em files\+Info} & A pointer to the \mbox{\hyperlink{structFilesInfo}{Files\+Info}} structure to store file names and count. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 if an error occurs (e.\+g., invalid chunk size). 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8c_a7227a27d959ebccebb6f10536cf4aa75}\label{dispatcher_8c_a7227a27d959ebccebb6f10536cf4aa75}} 
+\index{dispatcher.c@{dispatcher.c}!printResults@{printResults}}
+\index{printResults@{printResults}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{printResults()}{printResults()}}
+{\footnotesize\ttfamily void print\+Results (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Prints the aggregated results for each file. 
+
+Outputs the file index, word count, and words with consonants for each file. \mbox{\Hypertarget{dispatcher_8c_a2d20316ca03953a2feaba3cccd5966f0}\label{dispatcher_8c_a2d20316ca03953a2feaba3cccd5966f0}} 
+\index{dispatcher.c@{dispatcher.c}!setupDispatcher@{setupDispatcher}}
+\index{setupDispatcher@{setupDispatcher}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{setupDispatcher()}{setupDispatcher()}}
+{\footnotesize\ttfamily int setup\+Dispatcher (\begin{DoxyParamCaption}\item[{int}]{num\+Files,  }\item[{int}]{n\+Processes }\end{DoxyParamCaption})}
+
+
+
+Initializes the dispatcher with the number of files and processes. 
+
+Allocates memory for the \mbox{\hyperlink{structFile}{File}} and \mbox{\hyperlink{structFileData}{File\+Data}} structures and initializes them.
+
+
+\begin{DoxyParams}{Parameters}
+{\em num\+Files} & The number of files to be processed. \\
+\hline
+{\em n\+Processes} & The number of processes to be used for processing. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8c_a8dd93731ba1e41c6d760726b61ea0b23}\label{dispatcher_8c_a8dd93731ba1e41c6d760726b61ea0b23}} 
+\index{dispatcher.c@{dispatcher.c}!setupFiles@{setupFiles}}
+\index{setupFiles@{setupFiles}!dispatcher.c@{dispatcher.c}}
+\doxysubsubsection{\texorpdfstring{setupFiles()}{setupFiles()}}
+{\footnotesize\ttfamily int setup\+Files (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Sets up the necessary structures for file processing. 
+
+Allocates memory for the \mbox{\hyperlink{structFilesInfo}{Files\+Info}} structure and parses command-\/line arguments.
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of files to be processed, or -\/1 on error. 
+\end{DoxyReturn}

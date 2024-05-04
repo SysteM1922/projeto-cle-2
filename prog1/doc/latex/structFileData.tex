@@ -1,0 +1,46 @@
+\hypertarget{structFileData}{}\doxysection{File\+Data Struct Reference}
+\label{structFileData}\index{FileData@{FileData}}
+
+
+Structure for storing data about each file.  
+
+
+
+
+{\ttfamily \#include $<$dispatcher.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structFileData_a43b223ad5983dd79a49bf1f32961c5be}\label{structFileData_a43b223ad5983dd79a49bf1f32961c5be}} 
+int {\bfseries file\+Idx}
+\item 
+int \mbox{\hyperlink{structFileData_a944d4b584c77ae3c7a636e8b611acb17}{words\+Count}}
+\item 
+int \mbox{\hyperlink{structFileData_a4de6f9bb64740653cae1a2b41ceb8bcd}{words\+With\+Consonants}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure for storing data about each file. 
+
+Contains the file index, the number of words processed by the thread for this chunk, and the number of words with at least two instances of the same consonant. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structFileData_a944d4b584c77ae3c7a636e8b611acb17}\label{structFileData_a944d4b584c77ae3c7a636e8b611acb17}} 
+\index{FileData@{FileData}!wordsCount@{wordsCount}}
+\index{wordsCount@{wordsCount}!FileData@{FileData}}
+\doxysubsubsection{\texorpdfstring{wordsCount}{wordsCount}}
+{\footnotesize\ttfamily int File\+Data\+::words\+Count}
+
+Number of words processed by the thread for this chunk \mbox{\Hypertarget{structFileData_a4de6f9bb64740653cae1a2b41ceb8bcd}\label{structFileData_a4de6f9bb64740653cae1a2b41ceb8bcd}} 
+\index{FileData@{FileData}!wordsWithConsonants@{wordsWithConsonants}}
+\index{wordsWithConsonants@{wordsWithConsonants}!FileData@{FileData}}
+\doxysubsubsection{\texorpdfstring{wordsWithConsonants}{wordsWithConsonants}}
+{\footnotesize\ttfamily int File\+Data\+::words\+With\+Consonants}
+
+Number of words with at least two instances of the same consonant 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{dispatcher_8h}{dispatcher.\+h}}\end{DoxyCompactItemize}

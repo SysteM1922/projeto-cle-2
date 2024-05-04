@@ -1,0 +1,226 @@
+\hypertarget{dispatcher_8h}{}\doxysection{dispatcher.\+h File Reference}
+\label{dispatcher_8h}\index{dispatcher.h@{dispatcher.h}}
+
+
+Header file for the dispatcher module.  
+
+
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+Include dependency graph for dispatcher.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structFile}{File}}
+\begin{DoxyCompactList}\small\item\em Structure for storing information about the current file being processed. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structFilesInfo}{Files\+Info}}
+\begin{DoxyCompactList}\small\item\em Structure for storing information about the files to be processed. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structFileData}{File\+Data}}
+\begin{DoxyCompactList}\small\item\em Structure for storing data about each file. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structChunk}{Chunk}}
+\begin{DoxyCompactList}\small\item\em Structure for storing a chunk of data read from the file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{dispatcher_8h_a86261d934fc0037fd4222a4bbe607fdc}\label{dispatcher_8h_a86261d934fc0037fd4222a4bbe607fdc}} 
+\#define {\bfseries DEFAULT\+\_\+\+CHUNK\+\_\+\+SIZE}~4096
+\item 
+\mbox{\Hypertarget{dispatcher_8h_a92fd8bb5807bf6abb640686f51e5df3e}\label{dispatcher_8h_a92fd8bb5807bf6abb640686f51e5df3e}} 
+\#define {\bfseries MAX\+\_\+\+PROCESSES}~8
+\item 
+\mbox{\Hypertarget{dispatcher_8h_a2c5eecb22513a88c24ae5831a3265e54}\label{dispatcher_8h_a2c5eecb22513a88c24ae5831a3265e54}} 
+\#define {\bfseries MAX\+\_\+\+FILES}~20
+\item 
+\mbox{\Hypertarget{dispatcher_8h_af362949cded6691a7c7851c4af1b1ce0}\label{dispatcher_8h_af362949cded6691a7c7851c4af1b1ce0}} 
+\#define {\bfseries MAX\+\_\+\+FILE\+\_\+\+PATH\+\_\+\+SIZE}~128
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structFile}{File}} \mbox{\hyperlink{dispatcher_8h_a35addb8715fe28f18f6cf3b6a7f7a1b4}{File}}
+\begin{DoxyCompactList}\small\item\em Structure for storing information about the current file being processed. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structFilesInfo}{Files\+Info}} \mbox{\hyperlink{dispatcher_8h_af5dd712d7984df8610ae8001b3230d0f}{Files\+Info}}
+\begin{DoxyCompactList}\small\item\em Structure for storing information about the files to be processed. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structFileData}{File\+Data}} \mbox{\hyperlink{dispatcher_8h_a54ad823d30af702fdfe723b012ab3594}{File\+Data}}
+\begin{DoxyCompactList}\small\item\em Structure for storing data about each file. \end{DoxyCompactList}\item 
+typedef struct \mbox{\hyperlink{structChunk}{Chunk}} \mbox{\hyperlink{dispatcher_8h_ac3addd1f4caf0ce9547dc20e95664253}{Chunk}}
+\begin{DoxyCompactList}\small\item\em Structure for storing a chunk of data read from the file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{dispatcher_8h_a8dd93731ba1e41c6d760726b61ea0b23}{setup\+Files}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Sets up the necessary structures for file processing. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dispatcher_8h_a2d20316ca03953a2feaba3cccd5966f0}{setup\+Dispatcher}} (int num\+Files, int n\+Processes)
+\begin{DoxyCompactList}\small\item\em Initializes the dispatcher with the number of files and processes. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structChunk}{Chunk}} \mbox{\hyperlink{dispatcher_8h_aa9c6812e87e8fbfa50fc406beeb117e5}{get\+Chunk}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the next chunk of data from the current file. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{dispatcher_8h_a822a6c0fa5475c216669fd0c79aaa2ae}{aggregate\+Results}} (int file\+Idx, int words, int \mbox{\hyperlink{main_8c_ad192c56aa6f5571f33d369a589bf309d}{consonants}})
+\begin{DoxyCompactList}\small\item\em Aggregates results from file processing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{dispatcher_8h_a7227a27d959ebccebb6f10536cf4aa75}{print\+Results}} ()
+\begin{DoxyCompactList}\small\item\em Prints the aggregated results for each file. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{dispatcher_8h_a30652e2a0f2cb13cf169a7c768ff194a}{get\+Chunk\+Size}} ()
+\begin{DoxyCompactList}\small\item\em Retrieves the chunk size specified by the user, or the default chunk size if not specified. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for the dispatcher module. 
+
+This file contains the definitions of structures and function prototypes used for setting up file processing, dispatching tasks, and aggregating results. It includes structures for file information, file data, and chunks of data, as well as functions for initializing the dispatcher, retrieving chunks of data, aggregating results, and printing results.
+
+\begin{DoxyAuthor}{Author}
+Pedro Rasinhas -\/ 103541 
+
+Guilherme Antunes -\/ 103600 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Typedef Documentation}
+\mbox{\Hypertarget{dispatcher_8h_ac3addd1f4caf0ce9547dc20e95664253}\label{dispatcher_8h_ac3addd1f4caf0ce9547dc20e95664253}} 
+\index{dispatcher.h@{dispatcher.h}!Chunk@{Chunk}}
+\index{Chunk@{Chunk}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{Chunk}{Chunk}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structChunk}{Chunk}} \mbox{\hyperlink{structChunk}{Chunk}}}
+
+
+
+Structure for storing a chunk of data read from the file. 
+
+Contains the chunk of data, a flag indicating if it\textquotesingle{}s the final chunk, the file index, and the start and end positions of the chunk in the file. \mbox{\Hypertarget{dispatcher_8h_a35addb8715fe28f18f6cf3b6a7f7a1b4}\label{dispatcher_8h_a35addb8715fe28f18f6cf3b6a7f7a1b4}} 
+\index{dispatcher.h@{dispatcher.h}!File@{File}}
+\index{File@{File}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{File}{File}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structFile}{File}} \mbox{\hyperlink{structFile}{File}}}
+
+
+
+Structure for storing information about the current file being processed. 
+
+Contains the current file index, a pointer to the file, the current position in the file, and the size of the file. \mbox{\Hypertarget{dispatcher_8h_a54ad823d30af702fdfe723b012ab3594}\label{dispatcher_8h_a54ad823d30af702fdfe723b012ab3594}} 
+\index{dispatcher.h@{dispatcher.h}!FileData@{FileData}}
+\index{FileData@{FileData}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{FileData}{FileData}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structFileData}{File\+Data}} \mbox{\hyperlink{structFileData}{File\+Data}}}
+
+
+
+Structure for storing data about each file. 
+
+Contains the file index, the number of words processed by the thread for this chunk, and the number of words with at least two instances of the same consonant. \mbox{\Hypertarget{dispatcher_8h_af5dd712d7984df8610ae8001b3230d0f}\label{dispatcher_8h_af5dd712d7984df8610ae8001b3230d0f}} 
+\index{dispatcher.h@{dispatcher.h}!FilesInfo@{FilesInfo}}
+\index{FilesInfo@{FilesInfo}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{FilesInfo}{FilesInfo}}
+{\footnotesize\ttfamily typedef struct \mbox{\hyperlink{structFilesInfo}{Files\+Info}} \mbox{\hyperlink{structFilesInfo}{Files\+Info}}}
+
+
+
+Structure for storing information about the files to be processed. 
+
+Contains an array to store filenames and the total number of files. 
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{dispatcher_8h_a822a6c0fa5475c216669fd0c79aaa2ae}\label{dispatcher_8h_a822a6c0fa5475c216669fd0c79aaa2ae}} 
+\index{dispatcher.h@{dispatcher.h}!aggregateResults@{aggregateResults}}
+\index{aggregateResults@{aggregateResults}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{aggregateResults()}{aggregateResults()}}
+{\footnotesize\ttfamily void aggregate\+Results (\begin{DoxyParamCaption}\item[{int}]{file\+Idx,  }\item[{int}]{words,  }\item[{int}]{consonants }\end{DoxyParamCaption})}
+
+
+
+Aggregates results from file processing. 
+
+Updates the \mbox{\hyperlink{structFileData}{File\+Data}} structure with the number of words and words with consonants.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Idx} & The index of the file being processed. \\
+\hline
+{\em words} & The number of words found in the file. \\
+\hline
+{\em consonants} & The number of words with consonants found in the file. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{dispatcher_8h_aa9c6812e87e8fbfa50fc406beeb117e5}\label{dispatcher_8h_aa9c6812e87e8fbfa50fc406beeb117e5}} 
+\index{dispatcher.h@{dispatcher.h}!getChunk@{getChunk}}
+\index{getChunk@{getChunk}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{getChunk()}{getChunk()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structChunk}{Chunk}} get\+Chunk (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Retrieves the next chunk of data from the current file. 
+
+Reads a chunk of data from the current file, handling file boundaries and UTF-\/8 encoding.
+
+\begin{DoxyReturn}{Returns}
+A \mbox{\hyperlink{structChunk}{Chunk}} structure containing the chunk data, file index, and position information. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8h_a30652e2a0f2cb13cf169a7c768ff194a}\label{dispatcher_8h_a30652e2a0f2cb13cf169a7c768ff194a}} 
+\index{dispatcher.h@{dispatcher.h}!getChunkSize@{getChunkSize}}
+\index{getChunkSize@{getChunkSize}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{getChunkSize()}{getChunkSize()}}
+{\footnotesize\ttfamily int get\+Chunk\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Retrieves the chunk size specified by the user, or the default chunk size if not specified. 
+
+\begin{DoxyReturn}{Returns}
+The chunk size. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8h_a7227a27d959ebccebb6f10536cf4aa75}\label{dispatcher_8h_a7227a27d959ebccebb6f10536cf4aa75}} 
+\index{dispatcher.h@{dispatcher.h}!printResults@{printResults}}
+\index{printResults@{printResults}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{printResults()}{printResults()}}
+{\footnotesize\ttfamily void print\+Results (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Prints the aggregated results for each file. 
+
+Outputs the file index, word count, and words with consonants for each file. \mbox{\Hypertarget{dispatcher_8h_a2d20316ca03953a2feaba3cccd5966f0}\label{dispatcher_8h_a2d20316ca03953a2feaba3cccd5966f0}} 
+\index{dispatcher.h@{dispatcher.h}!setupDispatcher@{setupDispatcher}}
+\index{setupDispatcher@{setupDispatcher}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{setupDispatcher()}{setupDispatcher()}}
+{\footnotesize\ttfamily int setup\+Dispatcher (\begin{DoxyParamCaption}\item[{int}]{num\+Files,  }\item[{int}]{n\+Processes }\end{DoxyParamCaption})}
+
+
+
+Initializes the dispatcher with the number of files and processes. 
+
+Allocates memory for the \mbox{\hyperlink{structFile}{File}} and \mbox{\hyperlink{structFileData}{File\+Data}} structures and initializes them.
+
+
+\begin{DoxyParams}{Parameters}
+{\em num\+Files} & The number of files to be processed. \\
+\hline
+{\em n\+Processes} & The number of processes to be used for processing. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 on success, -\/1 on error. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{dispatcher_8h_a8dd93731ba1e41c6d760726b61ea0b23}\label{dispatcher_8h_a8dd93731ba1e41c6d760726b61ea0b23}} 
+\index{dispatcher.h@{dispatcher.h}!setupFiles@{setupFiles}}
+\index{setupFiles@{setupFiles}!dispatcher.h@{dispatcher.h}}
+\doxysubsubsection{\texorpdfstring{setupFiles()}{setupFiles()}}
+{\footnotesize\ttfamily int setup\+Files (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Sets up the necessary structures for file processing. 
+
+Allocates memory for the \mbox{\hyperlink{structFilesInfo}{Files\+Info}} structure and parses command-\/line arguments.
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The number of files to be processed, or -\/1 on error. 
+\end{DoxyReturn}

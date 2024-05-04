@@ -68,8 +68,6 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    (void)get_delta_time(); /* start timer */
-
     if (rank == DISTRIBUTOR_RANK)
     {
         while ((opt = getopt(argc, argv, "s:f:h")) != -1)
@@ -92,6 +90,8 @@ int main(int argc, char *argv[])
                 return EXIT_FAILURE;
             }
         }
+
+        (void)get_delta_time(); /* start timer */
 
         file = fopen(fileName, "rb");
         if (file == NULL) /* check if file was opened */

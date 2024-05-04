@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <getopt.h>
+#include <wchar.h>
 
 #include "dispatcher.h"
 #include "workers.h"
@@ -17,7 +18,7 @@ char alphanumeric_chars_underscore[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 
 
 int alphanumeric_chars_underscore_array_size = sizeof(alphanumeric_chars_underscore)/sizeof(char);
 
-char consonants[] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z'};
+char consonants[] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'};
 
 int consonants_array_size = sizeof(consonants)/sizeof(char);
 
@@ -185,7 +186,7 @@ int main(int argc, char *argv[]) {
 
                 // receive the fileId, the start position, the end position and the chunk in different messages
                 Chunk* receivedChunk = calloc(1, sizeof(Chunk));
-                receivedChunk->chunk = calloc(DEFAULT_CHUNK_SIZE, sizeof(unsigned char));
+                receivedChunk->chunk = calloc(chunkSize, sizeof(unsigned char));
 
                 MPI_Recv(&receivedChunk->fileIdx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 MPI_Recv(&receivedChunk->startPosition, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
@@ -193,13 +194,36 @@ int main(int argc, char *argv[]) {
                 MPI_Recv(receivedChunk->chunk, chunkSize, MPI_UNSIGNED_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
                 // Debug print
-                // printf("Worker %d: Received chunk, fileIdx: %d\n", rank, fileId);
-                // printf("Worker %d: Received chunk, start position: %d\n", rank, startPosition);
-                // printf("Worker %d: Received chunk, end position: %d\n", rank, endPosition);
-                // printf("Chunk: %s\n", chunk);
+                printf("Worker %d: Received chunk, fileIdx: %d\n", rank, receivedChunk->fileIdx);
+                printf("Worker %d: Received chunk, start position: %d\n", rank, receivedChunk->startPosition);
+                printf("Worker %d: Received chunk, end position: %d\n", rank, receivedChunk->endPosition);
+                printf("ChunkSize: %d\n", chunkSize);
 
                 ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
+
+                wchar_t* words = calloc(chunkSize, sizeof(wchar_t));
+
+                for (int i = 0; i < chunkSize; i++) {
+                    if (receivedChunk->chunk[i] == '\0') {
+                        break;
+                    }
+                    unsigned char currentByte = receivedChunk->chunk[i];
+                    unsigned int currentChar = currentByte;
+
+                    short bytesCount = numOfBytesInUTF8(currentByte); // Get the number of bytes for the current character
+
+                    for (int j = 1; j < bytesCount; j++) {
+                        currentByte = receivedChunk->chunk[++i];
+                        currentChar = (currentChar << 8) | currentByte; // Shift the current character and add the next byte
+                    }
+
+                    words[i] = currentChar;
+                }
+
+                for (int i = 0; i < chunkSize; i++) {
+                    printf("%lc", words[i]);
+                }
 
                 // Process the chunk
                 int wordsCount = 0;
@@ -214,6 +238,9 @@ int main(int argc, char *argv[]) {
 
                 // Iterate over the chunk
                 for (int i = 0; i < chunkSize; i++) {
+                    if (receivedChunk->chunk[i] == '\0') {
+                        break;
+                    }
                     unsigned char currentByte = receivedChunk->chunk[i];
                     unsigned int currentChar = currentByte;
 

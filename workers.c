@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <pthread.h>
-#include <libgen.h>
 #include <time.h>
-#include <getopt.h>
 #include <stdlib.h>
 
 
@@ -24,8 +21,8 @@ ChunkResults processChunk(Chunk* chunk, int chunkSize) {
 
     
     results.fileIdx = chunk->fileIdx;
-    results.wordsCount = wordsCount * chunk->fileIdx;
-    results.wordsWithConsonants = wordsWithConsonants * chunk->fileIdx;
+    results.wordsCount = chunk->fileIdx;
+    results.wordsWithConsonants = chunk->fileIdx;
 
     return results;
         

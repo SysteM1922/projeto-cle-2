@@ -1,7 +1,6 @@
-mpicc -Wall -O3 $1 -o a.o -lm
-shift 1
+mpicc -Wall -O3 main.c bitonicSort.c -o a.o -lm
 n=
-while getopts "n:f:h" opt; do
+while getopts "s:n:f:h" opt; do
     case $opt in
         n) n=$OPTARG;;
     esac

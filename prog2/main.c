@@ -5,10 +5,10 @@
 #include <math.h>
 #include <getopt.h>
 
-#define DISTRIBUTOR_RANK 0
+#include "structs.h"
+#include "bitonicSort.h"
 
-/** \brief sort type */
-int sortType = 0;
+#define DISTRIBUTOR_RANK 0
 
 /**
  * \brief Get the process time that has elapsed since last call of this time.
@@ -30,14 +30,23 @@ static double get_delta_time(void)
 
 int main(int argc, char *argv[])
 {
-    int rank, size, opt, arraySize;
+    int rank, size, opt, arraySize, i, nIteractions, nProcNow, sortType = 0;
     char *fileName = NULL;
     FILE *file;
-    int *array = NULL;
+    int *sendArray = NULL, *recvArray;
+    int gMemb[8];
+
+    WorkerArgs workerArgs;
+
+    MPI_Comm presentComm, nextComm;
+    MPI_Group presentGroup, nextGroup;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    nIteractions = log2(size);
+    nProcNow = size;
 
     if (log2(size) != (int)log2(size))
     {
@@ -63,10 +72,13 @@ int main(int argc, char *argv[])
 
     if (rank == DISTRIBUTOR_RANK)
     {
-        while ((opt = getopt(argc, argv, "f:h")) != -1)
+        while ((opt = getopt(argc, argv, "s:f:h")) != -1)
         {
             switch (opt)
             {
+            case 's': /* sort type */
+                sortType = atoi(optarg);
+                break;
             case 'f': /* file name */
                 fileName = optarg;
                 break;
@@ -94,8 +106,9 @@ int main(int argc, char *argv[])
             MPI_Finalize();
             return EXIT_FAILURE;
         }
-        array = (int *)malloc(arraySize * sizeof(int)); /* allocate memory for the array */
-        if (fread(array, sizeof(int), arraySize, file) != arraySize) /* read the array */
+        sendArray = (int *)malloc(arraySize * sizeof(int));              /* allocate memory for the array */
+        recvArray = (int *)malloc(arraySize * sizeof(int));              /* allocate memory for the array */
+        if (fread(sendArray, sizeof(int), arraySize, file) != arraySize) /* read the array */
         {
             printf("Erro ao ler o array\n");
             MPI_Finalize();
@@ -108,12 +121,65 @@ int main(int argc, char *argv[])
             MPI_Finalize();
             return EXIT_FAILURE;
         }
+
+        workerArgs.direction = sortType;
+        workerArgs.size = arraySize;
+    }
+
+    MPI_Bcast(&workerArgs, sizeof(WorkerArgs), MPI_BYTE, DISTRIBUTOR_RANK, MPI_COMM_WORLD);
+
+    recvArray = (int *)malloc(workerArgs.size * sizeof(int)); /* allocate memory for the array */
+
+    presentComm = MPI_COMM_WORLD;
+    MPI_Comm_group(presentComm, &presentGroup);
+
+    for (i = 0; i < size; i++)
+    {
+        gMemb[i] = i;
+    }
+
+    for (i = 0; i < nIteractions + 1; i++)
+    {
+        if (i != 0)
+        {
+            MPI_Group_incl(presentGroup, nProcNow, gMemb, &nextGroup);
+            MPI_Comm_create(presentComm, nextGroup, &nextComm);
+            presentGroup = nextGroup;
+            presentComm = nextComm;
+
+            if (rank >= nProcNow)
+            {
+                free(recvArray);
+                MPI_Finalize();
+                return EXIT_SUCCESS;
+            }
+        }
+
+        MPI_Comm_size(presentComm, &size);
+        MPI_Scatter(sendArray, workerArgs.size / size, MPI_INT, recvArray, workerArgs.size / size, MPI_INT, DISTRIBUTOR_RANK, presentComm);
+
+        if (i == 0)
+        {
+            sort(recvArray, workerArgs.size / size, rank % 2 == workerArgs.direction);
+        }
+        else
+        {
+            merge(recvArray, workerArgs.size / size, rank % 2 == workerArgs.direction);
+        }
+
+        MPI_Gather(recvArray, workerArgs.size / size, MPI_INT, sendArray, workerArgs.size / size, MPI_INT, DISTRIBUTOR_RANK, presentComm);
+
+        nProcNow = nProcNow >> 1;
     }
 
     if (rank == DISTRIBUTOR_RANK)
     {
+        validateArray(recvArray, arraySize, workerArgs.direction);
         printf("Time elapsed: %f s\n", get_delta_time());
     }
+
+    free(recvArray);
+    free(sendArray);
 
     MPI_Finalize();
 

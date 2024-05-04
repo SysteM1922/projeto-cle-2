@@ -14,16 +14,11 @@
 
 #include <stdbool.h>
 
-/** \brief enum Action */
-enum Action
-{
-    SORT,
-    MERGE
-};
-
 /** \brief struct SubArray */
 typedef struct
 {
+    int direction;
+    int size;
 } WorkerArgs;
 
 #endif

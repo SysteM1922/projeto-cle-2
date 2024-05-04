@@ -69,21 +69,27 @@ bool isAggregationMark(unsigned int character) {
 
 short numOfBytesInUTF8(unsigned char character) {
 
-    unsigned int characterAsInt = character;
-    unsigned int mostSignificantNibble = characterAsInt >> 4;
-
-    if (mostSignificantNibble <= 0x7) {
+    if ((character & 0x80) == 0)
+    { // 0xxxxxxx
         return 1;
-    } else if (mostSignificantNibble >= 0xC && mostSignificantNibble <= 0xD) {
+    }
+    else if ((character & 0xE0) == 0xC0)
+    { // 110xxxxx
         return 2;
-    } else if (mostSignificantNibble == 0xE) {
+    }
+    else if ((character & 0xF0) == 0xE0)
+    { // 1110xxxx
         return 3;
-    } else if (mostSignificantNibble == 0xF) {
+    }
+    else if ((character & 0xF8) == 0xF0)
+    { // 11110xxx
         return 4;
     }
-
-    // We are not analysing the most significant Byte!
-    return -1;
+    else
+    {
+        // Invalid UTF-8 character
+        return -1;
+    }
 
 }
 

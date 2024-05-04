@@ -221,10 +221,7 @@ int main(int argc, char *argv[]) {
                     words[i] = currentChar;
                 }
 
-                for (int i = 0; i < chunkSize; i++) {
-                    printf("%lc", words[i]);
-                }
-
+                
                 // Process the chunk
                 int wordsCount = 0;
                 int wordsWithConsonants = 0;

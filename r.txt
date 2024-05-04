@@ -1,0 +1,4 @@
+mpicc -Wall -o main main.c workers.c dispatcher.c utils.c utf8_utils.c -lm
+
+
+mpiexec -n 4 ./main -s 4096 text0.txt text1.txt text2.txt text3.txt text4.txt 

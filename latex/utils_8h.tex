@@ -1,0 +1,80 @@
+\hypertarget{utils_8h}{}\doxysection{utils.\+h File Reference}
+\label{utils_8h}\index{utils.h@{utils.h}}
+
+
+Header file for utility functions.  
+
+
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}dispatcher.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}workers.\+h\char`\"{}}\newline
+Include dependency graph for utils.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+long \mbox{\hyperlink{utils_8h_adf742a9562272d52b6ab763a318034e8}{get\+File\+Size}} (const char $\ast$file\+Name)
+\begin{DoxyCompactList}\small\item\em Gets the size of a file. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{utils_8h_ac7ae911e3debf2022f2a3eef079690f8}{is\+In}} (unsigned int current\+Char, char $\ast$\mbox{\hyperlink{main_8c_ad192c56aa6f5571f33d369a589bf309d}{consonants}}, int size)
+\begin{DoxyCompactList}\small\item\em Checks if a character is in a given array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file for utility functions. 
+
+This header file declares utility functions for file handling and character checking. It includes functions for determining the size of a file and checking if a character is in a given array. These utilities are essential for file processing tasks and character analysis in parallel processing applications.
+
+\begin{DoxyAuthor}{Author}
+Pedro Rasinhas -\/ 103541 
+
+Guilherme Antunes -\/ 103600 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{utils_8h_adf742a9562272d52b6ab763a318034e8}\label{utils_8h_adf742a9562272d52b6ab763a318034e8}} 
+\index{utils.h@{utils.h}!getFileSize@{getFileSize}}
+\index{getFileSize@{getFileSize}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{getFileSize()}{getFileSize()}}
+{\footnotesize\ttfamily long get\+File\+Size (\begin{DoxyParamCaption}\item[{const char $\ast$}]{file\+Name }\end{DoxyParamCaption})}
+
+
+
+Gets the size of a file. 
+
+Opens a file in binary mode, seeks to the end to find the file size, and then closes the file. Returns -\/1 if the file cannot be opened.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+Name} & The name of the file to get the size of. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The size of the file in bytes, or -\/1 if the file cannot be opened. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{utils_8h_ac7ae911e3debf2022f2a3eef079690f8}\label{utils_8h_ac7ae911e3debf2022f2a3eef079690f8}} 
+\index{utils.h@{utils.h}!isIn@{isIn}}
+\index{isIn@{isIn}!utils.h@{utils.h}}
+\doxysubsubsection{\texorpdfstring{isIn()}{isIn()}}
+{\footnotesize\ttfamily bool is\+In (\begin{DoxyParamCaption}\item[{unsigned int}]{current\+Char,  }\item[{char $\ast$}]{consonants,  }\item[{int}]{size }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is in a given array. 
+
+Iterates through an array of characters to determine if the current character is present.
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+Char} & The character to check. \\
+\hline
+{\em consonants} & The array of characters to search through. \\
+\hline
+{\em size} & The size of the consonants array. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the character is found in the array, false otherwise. 
+\end{DoxyReturn}

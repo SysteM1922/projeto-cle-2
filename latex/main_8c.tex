@@ -1,0 +1,175 @@
+\hypertarget{main_8c}{}\doxysection{main.\+c File Reference}
+\label{main_8c}\index{main.c@{main.c}}
+
+
+Main program for parallel file processing using MPI.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$mpi.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include $<$sys/stat.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$getopt.\+h$>$}\newline
+{\ttfamily \#include $<$wchar.\+h$>$}\newline
+{\ttfamily \#include $<$wctype.\+h$>$}\newline
+{\ttfamily \#include $<$locale.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}dispatcher.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}workers.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utils.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}utf8\+\_\+utils.\+h\char`\"{}}\newline
+Include dependency graph for main.\+c\+:
+% FIG 0
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{main_8c_a90d3cc92a1f0e5cff01a0ec3f35c09e3}{is\+Letter}} (wchar\+\_\+t c)
+\begin{DoxyCompactList}\small\item\em Checks if a character is a letter or underscore. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8c_aab12bd4a5c0d59d03f02f487edc12de0}{is\+Consonant}} (wchar\+\_\+t c)
+\begin{DoxyCompactList}\small\item\em Checks if a character is a consonant. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a25c87cda698d0a8db7c1e46bfb31bf17}{extract\+Letter}} (wchar\+\_\+t $\ast$letter)
+\begin{DoxyCompactList}\small\item\em Converts a complex letter to its simple form. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8c_a0ddf1224851353fc92bfbff6f499fa97}{main}} (int argc, char $\ast$argv\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Main function for the parallel file processing application. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+char \mbox{\hyperlink{main_8c_a36d636df8c87afec6a3f1da461ed2a6d}{alphanumeric\+\_\+chars\+\_\+underscore}} \mbox{[}$\,$\mbox{]} = \{\textquotesingle{}a\textquotesingle{}, \textquotesingle{}b\textquotesingle{}, \textquotesingle{}c\textquotesingle{}, \textquotesingle{}d\textquotesingle{}, \textquotesingle{}e\textquotesingle{}, \textquotesingle{}f\textquotesingle{}, \textquotesingle{}g\textquotesingle{}, \textquotesingle{}h\textquotesingle{}, \textquotesingle{}i\textquotesingle{}, \textquotesingle{}j\textquotesingle{}, \textquotesingle{}k\textquotesingle{}, \textquotesingle{}l\textquotesingle{}, \textquotesingle{}m\textquotesingle{}, \textquotesingle{}n\textquotesingle{}, \textquotesingle{}o\textquotesingle{}, \textquotesingle{}p\textquotesingle{}, \textquotesingle{}q\textquotesingle{}, \textquotesingle{}r\textquotesingle{}, \textquotesingle{}s\textquotesingle{}, \textquotesingle{}t\textquotesingle{}, \textquotesingle{}u\textquotesingle{}, \textquotesingle{}v\textquotesingle{}, \textquotesingle{}w\textquotesingle{}, \textquotesingle{}x\textquotesingle{}, \textquotesingle{}y\textquotesingle{}, \textquotesingle{}z\textquotesingle{}, \textquotesingle{}0\textquotesingle{}, \textquotesingle{}1\textquotesingle{}, \textquotesingle{}2\textquotesingle{}, \textquotesingle{}3\textquotesingle{}, \textquotesingle{}4\textquotesingle{}, \textquotesingle{}5\textquotesingle{}, \textquotesingle{}6\textquotesingle{}, \textquotesingle{}7\textquotesingle{}, \textquotesingle{}8\textquotesingle{}, \textquotesingle{}9\textquotesingle{}, \textquotesingle{}\+\_\+\textquotesingle{}\}
+\begin{DoxyCompactList}\small\item\em Array of alphanumeric characters including underscore. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8c_a7003239e2f7a791b1ce690692f50c60f}\label{main_8c_a7003239e2f7a791b1ce690692f50c60f}} 
+int \mbox{\hyperlink{main_8c_a7003239e2f7a791b1ce690692f50c60f}{alphanumeric\+\_\+chars\+\_\+underscore\+\_\+array\+\_\+size}} = sizeof(\mbox{\hyperlink{main_8c_a36d636df8c87afec6a3f1da461ed2a6d}{alphanumeric\+\_\+chars\+\_\+underscore}}) / sizeof(char)
+\begin{DoxyCompactList}\small\item\em Size of the alphanumeric\+\_\+chars\+\_\+underscore array. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{main_8c_ad192c56aa6f5571f33d369a589bf309d}{consonants}} \mbox{[}$\,$\mbox{]} = \{\textquotesingle{}b\textquotesingle{}, \textquotesingle{}c\textquotesingle{}, \textquotesingle{}d\textquotesingle{}, \textquotesingle{}f\textquotesingle{}, \textquotesingle{}g\textquotesingle{}, \textquotesingle{}h\textquotesingle{}, \textquotesingle{}j\textquotesingle{}, \textquotesingle{}k\textquotesingle{}, \textquotesingle{}l\textquotesingle{}, \textquotesingle{}m\textquotesingle{}, \textquotesingle{}n\textquotesingle{}, \textquotesingle{}p\textquotesingle{}, \textquotesingle{}q\textquotesingle{}, \textquotesingle{}r\textquotesingle{}, \textquotesingle{}s\textquotesingle{}, \textquotesingle{}t\textquotesingle{}, \textquotesingle{}v\textquotesingle{}, \textquotesingle{}w\textquotesingle{}, \textquotesingle{}x\textquotesingle{}, \textquotesingle{}y\textquotesingle{}, \textquotesingle{}z\textquotesingle{}\}
+\begin{DoxyCompactList}\small\item\em Array of consonants. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8c_a9f2474e8ff58b8e31404d0ffb25adbd5}\label{main_8c_a9f2474e8ff58b8e31404d0ffb25adbd5}} 
+int \mbox{\hyperlink{main_8c_a9f2474e8ff58b8e31404d0ffb25adbd5}{consonants\+\_\+array\+\_\+size}} = sizeof(\mbox{\hyperlink{main_8c_ad192c56aa6f5571f33d369a589bf309d}{consonants}}) / sizeof(char)
+\begin{DoxyCompactList}\small\item\em Size of the consonants array. \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{main_8c_a1bbfd1372b5f1b118a0b7a50b9fce1ba}{outside\+\_\+word\+\_\+chars}} \mbox{[}$\,$\mbox{]} = \{0x20, 0x9, 0xD, 0xA, 0x2d, 0x22, 0x5b, 0x5d, 0x28, 0x29, 0x2e, 0x2c, 0x3a, 0x3b, 0x3f, 0x21\}
+\begin{DoxyCompactList}\small\item\em Array of characters considered outside of words. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8c_aa8fd6e97f9cd7cbb0ff207336228a393}\label{main_8c_aa8fd6e97f9cd7cbb0ff207336228a393}} 
+int \mbox{\hyperlink{main_8c_aa8fd6e97f9cd7cbb0ff207336228a393}{outside\+\_\+word\+\_\+array\+\_\+size}} = sizeof(\mbox{\hyperlink{main_8c_a1bbfd1372b5f1b118a0b7a50b9fce1ba}{outside\+\_\+word\+\_\+chars}}) / sizeof(char)
+\begin{DoxyCompactList}\small\item\em Size of the outside\+\_\+word\+\_\+chars array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main program for parallel file processing using MPI. 
+
+This file contains the main logic for a parallel file processing application using MPI. It includes the initialization of MPI, setting up file structures, dispatching tasks to worker processes, and aggregating results. The program processes files in chunks, counting words and words with consonants.
+
+\begin{DoxyAuthor}{Author}
+Pedro Rasinhas -\/ 103541 
+
+Guilherme Antunes -\/ 103600 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8c_a25c87cda698d0a8db7c1e46bfb31bf17}\label{main_8c_a25c87cda698d0a8db7c1e46bfb31bf17}} 
+\index{main.c@{main.c}!extractLetter@{extractLetter}}
+\index{extractLetter@{extractLetter}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{extractLetter()}{extractLetter()}}
+{\footnotesize\ttfamily void extract\+Letter (\begin{DoxyParamCaption}\item[{wchar\+\_\+t $\ast$}]{letter }\end{DoxyParamCaption})}
+
+
+
+Converts a complex letter to its simple form. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em letter} & The wide character to convert. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{main_8c_aab12bd4a5c0d59d03f02f487edc12de0}\label{main_8c_aab12bd4a5c0d59d03f02f487edc12de0}} 
+\index{main.c@{main.c}!isConsonant@{isConsonant}}
+\index{isConsonant@{isConsonant}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{isConsonant()}{isConsonant()}}
+{\footnotesize\ttfamily int is\+Consonant (\begin{DoxyParamCaption}\item[{wchar\+\_\+t}]{c }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is a consonant. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The wide character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 if the character is a consonant, 0 otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8c_a90d3cc92a1f0e5cff01a0ec3f35c09e3}\label{main_8c_a90d3cc92a1f0e5cff01a0ec3f35c09e3}} 
+\index{main.c@{main.c}!isLetter@{isLetter}}
+\index{isLetter@{isLetter}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{isLetter()}{isLetter()}}
+{\footnotesize\ttfamily int is\+Letter (\begin{DoxyParamCaption}\item[{wchar\+\_\+t}]{c }\end{DoxyParamCaption})}
+
+
+
+Checks if a character is a letter or underscore. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The wide character to check. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+1 if the character is a letter or underscore, 0 otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8c_a0ddf1224851353fc92bfbff6f499fa97}\label{main_8c_a0ddf1224851353fc92bfbff6f499fa97}} 
+\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily int main (\begin{DoxyParamCaption}\item[{int}]{argc,  }\item[{char $\ast$}]{argv\mbox{[}$\,$\mbox{]} }\end{DoxyParamCaption})}
+
+
+
+Main function for the parallel file processing application. 
+
+Initializes MPI, sets up file structures, dispatches tasks to worker processes, and aggregates results.
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The number of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line arguments. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+EXIT\+\_\+\+SUCCESS on success, EXIT\+\_\+\+FAILURE on error. 
+\end{DoxyReturn}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{main_8c_a36d636df8c87afec6a3f1da461ed2a6d}\label{main_8c_a36d636df8c87afec6a3f1da461ed2a6d}} 
+\index{main.c@{main.c}!alphanumeric\_chars\_underscore@{alphanumeric\_chars\_underscore}}
+\index{alphanumeric\_chars\_underscore@{alphanumeric\_chars\_underscore}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{alphanumeric\_chars\_underscore}{alphanumeric\_chars\_underscore}}
+{\footnotesize\ttfamily char alphanumeric\+\_\+chars\+\_\+underscore\mbox{[}$\,$\mbox{]} = \{\textquotesingle{}a\textquotesingle{}, \textquotesingle{}b\textquotesingle{}, \textquotesingle{}c\textquotesingle{}, \textquotesingle{}d\textquotesingle{}, \textquotesingle{}e\textquotesingle{}, \textquotesingle{}f\textquotesingle{}, \textquotesingle{}g\textquotesingle{}, \textquotesingle{}h\textquotesingle{}, \textquotesingle{}i\textquotesingle{}, \textquotesingle{}j\textquotesingle{}, \textquotesingle{}k\textquotesingle{}, \textquotesingle{}l\textquotesingle{}, \textquotesingle{}m\textquotesingle{}, \textquotesingle{}n\textquotesingle{}, \textquotesingle{}o\textquotesingle{}, \textquotesingle{}p\textquotesingle{}, \textquotesingle{}q\textquotesingle{}, \textquotesingle{}r\textquotesingle{}, \textquotesingle{}s\textquotesingle{}, \textquotesingle{}t\textquotesingle{}, \textquotesingle{}u\textquotesingle{}, \textquotesingle{}v\textquotesingle{}, \textquotesingle{}w\textquotesingle{}, \textquotesingle{}x\textquotesingle{}, \textquotesingle{}y\textquotesingle{}, \textquotesingle{}z\textquotesingle{}, \textquotesingle{}0\textquotesingle{}, \textquotesingle{}1\textquotesingle{}, \textquotesingle{}2\textquotesingle{}, \textquotesingle{}3\textquotesingle{}, \textquotesingle{}4\textquotesingle{}, \textquotesingle{}5\textquotesingle{}, \textquotesingle{}6\textquotesingle{}, \textquotesingle{}7\textquotesingle{}, \textquotesingle{}8\textquotesingle{}, \textquotesingle{}9\textquotesingle{}, \textquotesingle{}\+\_\+\textquotesingle{}\}}
+
+
+
+Array of alphanumeric characters including underscore. 
+
+Used for checking if a character is alphanumeric or underscore. \mbox{\Hypertarget{main_8c_ad192c56aa6f5571f33d369a589bf309d}\label{main_8c_ad192c56aa6f5571f33d369a589bf309d}} 
+\index{main.c@{main.c}!consonants@{consonants}}
+\index{consonants@{consonants}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{consonants}{consonants}}
+{\footnotesize\ttfamily char consonants\mbox{[}$\,$\mbox{]} = \{\textquotesingle{}b\textquotesingle{}, \textquotesingle{}c\textquotesingle{}, \textquotesingle{}d\textquotesingle{}, \textquotesingle{}f\textquotesingle{}, \textquotesingle{}g\textquotesingle{}, \textquotesingle{}h\textquotesingle{}, \textquotesingle{}j\textquotesingle{}, \textquotesingle{}k\textquotesingle{}, \textquotesingle{}l\textquotesingle{}, \textquotesingle{}m\textquotesingle{}, \textquotesingle{}n\textquotesingle{}, \textquotesingle{}p\textquotesingle{}, \textquotesingle{}q\textquotesingle{}, \textquotesingle{}r\textquotesingle{}, \textquotesingle{}s\textquotesingle{}, \textquotesingle{}t\textquotesingle{}, \textquotesingle{}v\textquotesingle{}, \textquotesingle{}w\textquotesingle{}, \textquotesingle{}x\textquotesingle{}, \textquotesingle{}y\textquotesingle{}, \textquotesingle{}z\textquotesingle{}\}}
+
+
+
+Array of consonants. 
+
+Used for checking if a character is a consonant. \mbox{\Hypertarget{main_8c_a1bbfd1372b5f1b118a0b7a50b9fce1ba}\label{main_8c_a1bbfd1372b5f1b118a0b7a50b9fce1ba}} 
+\index{main.c@{main.c}!outside\_word\_chars@{outside\_word\_chars}}
+\index{outside\_word\_chars@{outside\_word\_chars}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{outside\_word\_chars}{outside\_word\_chars}}
+{\footnotesize\ttfamily char outside\+\_\+word\+\_\+chars\mbox{[}$\,$\mbox{]} = \{0x20, 0x9, 0xD, 0xA, 0x2d, 0x22, 0x5b, 0x5d, 0x28, 0x29, 0x2e, 0x2c, 0x3a, 0x3b, 0x3f, 0x21\}}
+
+
+
+Array of characters considered outside of words. 
+
+Used for identifying word boundaries. 

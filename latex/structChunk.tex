@@ -1,0 +1,57 @@
+\hypertarget{structChunk}{}\doxysection{Chunk Struct Reference}
+\label{structChunk}\index{Chunk@{Chunk}}
+
+
+Structure for storing a chunk of data read from the file.  
+
+
+
+
+{\ttfamily \#include $<$dispatcher.\+h$>$}
+
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+unsigned char $\ast$ \mbox{\hyperlink{structChunk_a39ef4faed1e48206d9f2d3a278d49f03}{chunk}}
+\item 
+\mbox{\Hypertarget{structChunk_afc1640e4850ff5519f6fa81b2cc6f934}\label{structChunk_afc1640e4850ff5519f6fa81b2cc6f934}} 
+bool {\bfseries is\+Final}
+\item 
+\mbox{\Hypertarget{structChunk_ab9da7eaf6a3fb117a0e322081d1badd0}\label{structChunk_ab9da7eaf6a3fb117a0e322081d1badd0}} 
+int {\bfseries file\+Idx}
+\item 
+int \mbox{\hyperlink{structChunk_a4122e48bfa1ba1f7ce92f741d27ce677}{start\+Position}}
+\item 
+int \mbox{\hyperlink{structChunk_af16ed174047b38dde93d1e2f80af101b}{end\+Position}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure for storing a chunk of data read from the file. 
+
+Contains the chunk of data, a flag indicating if it\textquotesingle{}s the final chunk, the file index, and the start and end positions of the chunk in the file. 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structChunk_a39ef4faed1e48206d9f2d3a278d49f03}\label{structChunk_a39ef4faed1e48206d9f2d3a278d49f03}} 
+\index{Chunk@{Chunk}!chunk@{chunk}}
+\index{chunk@{chunk}!Chunk@{Chunk}}
+\doxysubsubsection{\texorpdfstring{chunk}{chunk}}
+{\footnotesize\ttfamily unsigned char$\ast$ Chunk\+::chunk}
+
+\mbox{\hyperlink{structChunk}{Chunk}} of data read from the file \mbox{\Hypertarget{structChunk_af16ed174047b38dde93d1e2f80af101b}\label{structChunk_af16ed174047b38dde93d1e2f80af101b}} 
+\index{Chunk@{Chunk}!endPosition@{endPosition}}
+\index{endPosition@{endPosition}!Chunk@{Chunk}}
+\doxysubsubsection{\texorpdfstring{endPosition}{endPosition}}
+{\footnotesize\ttfamily int Chunk\+::end\+Position}
+
+End position of the chunk in the file \mbox{\Hypertarget{structChunk_a4122e48bfa1ba1f7ce92f741d27ce677}\label{structChunk_a4122e48bfa1ba1f7ce92f741d27ce677}} 
+\index{Chunk@{Chunk}!startPosition@{startPosition}}
+\index{startPosition@{startPosition}!Chunk@{Chunk}}
+\doxysubsubsection{\texorpdfstring{startPosition}{startPosition}}
+{\footnotesize\ttfamily int Chunk\+::start\+Position}
+
+Start position of the chunk in the file 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{dispatcher_8h}{dispatcher.\+h}}\end{DoxyCompactItemize}

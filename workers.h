@@ -1,8 +1,8 @@
 #ifndef WORKER_H
 #define WORKER_H
 
-#include "utils.h"
 #include "dispatcher.h"
+
 
 typedef struct ChunkResults {
 
@@ -12,6 +12,5 @@ typedef struct ChunkResults {
 
 } ChunkResults;
 
-ChunkResults processChunk(Chunk* chunk, int chunkSize);
 
 #endif

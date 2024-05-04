@@ -12,6 +12,31 @@ static File* file;             // File structure - indicates the current file be
 static FilesInfo* filesInfo;    // FilesInfo structure - contains the names of the files to be read and the amount of files to be read.  
 static FileData* filesData;     // FileData structure - contains the information of a file.
 
+
+int getChunkSize(int argc, char *argv[]) {
+    int opt;
+    int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
+
+    // Parse command-line arguments
+    while ((opt = getopt(argc, argv, "s:"))!= -1) {
+        switch (opt) {
+            case 's':
+                chunkSize = atoi(optarg);
+                if (chunkSize <= 0) {
+                    fprintf(stderr, "Chunk size must be a positive integer\n");
+                    return -1;
+                }
+                break;
+            case '?':
+                printf("invalid option\n");
+                printf("Usage: %s -s <size_chunk> <filename1> <filename2> ...\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    return chunkSize;
+}
+
 int parseArgs(int argc, char *argv[], FilesInfo *filesInfo) {
     int opt;
     int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
@@ -41,30 +66,6 @@ int parseArgs(int argc, char *argv[], FilesInfo *filesInfo) {
     }
 
     return 0;
-}
-
-int getChunkSize(int argc, char *argv[]) {
-    int opt;
-    int chunkSize = DEFAULT_CHUNK_SIZE; // Default chunk size
-
-    // Parse command-line arguments
-    while ((opt = getopt(argc, argv, "s:"))!= -1) {
-        switch (opt) {
-            case 's':
-                chunkSize = atoi(optarg);
-                if (chunkSize <= 0) {
-                    fprintf(stderr, "Chunk size must be a positive integer\n");
-                    return -1;
-                }
-                break;
-            case '?':
-                printf("invalid option\n");
-                printf("Usage: %s -s <size_chunk> <filename1> <filename2> ...\n", argv[0]);
-                exit(EXIT_FAILURE);
-        }
-    }
-
-    return chunkSize;
 }
 
 int setupFiles(int argc, char *argv[]) {

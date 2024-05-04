@@ -2,26 +2,6 @@
 
 #include "utf8_utils.h"
 
-short numOfBytesInUTF8(unsigned char character) {
-
-    unsigned int characterAsInt = character;
-    unsigned int mostSignificantNibble = characterAsInt >> 4;
-
-    if (mostSignificantNibble <= 0x7) {
-        return 1;
-    } else if (mostSignificantNibble >= 0xC && mostSignificantNibble <= 0xD) {
-        return 2;
-    } else if (mostSignificantNibble == 0xE) {
-        return 3;
-    } else if (mostSignificantNibble == 0xF) {
-        return 4;
-    }
-
-    // We are not analysing the most significant Byte!
-    return -1;
-
-}
-
 bool isSeparationCharacter(unsigned int character) {
 
     switch (character) {
@@ -84,6 +64,26 @@ bool isAggregationMark(unsigned int character) {
         default:
             return false;
     }
+
+}
+
+short numOfBytesInUTF8(unsigned char character) {
+
+    unsigned int characterAsInt = character;
+    unsigned int mostSignificantNibble = characterAsInt >> 4;
+
+    if (mostSignificantNibble <= 0x7) {
+        return 1;
+    } else if (mostSignificantNibble >= 0xC && mostSignificantNibble <= 0xD) {
+        return 2;
+    } else if (mostSignificantNibble == 0xE) {
+        return 3;
+    } else if (mostSignificantNibble == 0xF) {
+        return 4;
+    }
+
+    // We are not analysing the most significant Byte!
+    return -1;
 
 }
 

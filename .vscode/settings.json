@@ -1,6 +1,7 @@
 {
   "files.associations": {
     "utf8_utils.h": "c",
-    "stat.h": "c"
+    "stat.h": "c",
+    "workers.h": "c"
   }
 }

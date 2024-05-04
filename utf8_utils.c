@@ -67,7 +67,7 @@ bool isAggregationMark(unsigned int character) {
 
 }
 
-short numOfBytesInUTF8(unsigned char character) {
+int numOfBytesInUTF8(unsigned char character) {
 
     if ((character & 0x80) == 0)
     { // 0xxxxxxx

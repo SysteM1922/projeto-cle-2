@@ -154,7 +154,7 @@ Chunk getChunk() {
 
     while (!feof(fileS) && bitsRead < endPosition - startPostion) {
         unsigned char currentByte = fgetc(fileS);
-        short bytesCount = numOfBytesInUTF8(currentByte);
+        int bytesCount = numOfBytesInUTF8(currentByte);
 
         currentChar = currentByte;
 

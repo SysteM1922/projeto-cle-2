@@ -8,6 +8,6 @@ bool isSeparationCharacter(unsigned int character);
 bool isWhiteSpace(unsigned int character);
 bool isPunctuationMark(unsigned int character);
 bool isAggregationMark(unsigned int character);
-short numOfBytesInUTF8(unsigned char character);
+int numOfBytesInUTF8(unsigned char character);
 
 #endif

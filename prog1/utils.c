@@ -77,6 +77,7 @@ void convertBytesToWchar(unsigned char *bytes, size_t size, wchar_t *wc) {
     
     // Converter bytes UTF-8 em um caractere amplo
     if (iconv(cd, &inbuf, &inbytesleft, &outbuf, &outbytesleft) == (size_t)-1) {
+        printf("%ld\n", size);
         perror("iconv");
         iconv_close(cd);
         return;

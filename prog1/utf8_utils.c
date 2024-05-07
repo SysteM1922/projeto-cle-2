@@ -187,39 +187,6 @@ bool isAlphanumeric(unsigned int character)
     return false;
 }
 
-/**
- * \brief Converts UTF-8 bytes to a Unicode codepoint.
- *
- * Converts a sequence of UTF-8 bytes to their corresponding Unicode codepoint.
- *
- * \param bytes The array of UTF-8 bytes.
- * \param num_bytes The number of bytes in the sequence.
- * \return The Unicode codepoint, or -1 if the number of bytes is invalid.
- */
-int utf8_to_codepoint(unsigned char *bytes, int num_bytes)
-{
-    int codepoint = 0;
-    switch (num_bytes)
-    {
-    case 1:
-        codepoint = bytes[0];
-        break;
-    case 2:
-        codepoint = ((bytes[0] & 0x1F) << 6) | (bytes[1] & 0x3F);
-        break;
-    case 3:
-        codepoint = ((bytes[0] & 0x0F) << 12) | ((bytes[1] & 0x3F) << 6) | (bytes[2] & 0x3F);
-        break;
-    case 4:
-        codepoint = ((bytes[0] & 0x07) << 18) | ((bytes[1] & 0x3F) << 12) | ((bytes[2] & 0x3F) << 6) | (bytes[3] & 0x3F);
-        break;
-    default:
-        // Invalid number of bytes
-        return -1;
-    }
-    return codepoint;
-}
-
 
 /**
  * \brief Converts a character to lowercase.

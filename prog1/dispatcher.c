@@ -55,6 +55,11 @@ int getChunkSize(int argc, char *argv[])
         }
     }
 
+    if (chunkSize == 4096)
+    {
+        chunkSize = chunkSize + 4;
+    }
+
     return chunkSize;
 }
 
@@ -205,7 +210,7 @@ void printResults()
 Chunk getChunk()
 {
     Chunk chunk;
-    chunk.chunk = malloc(chunkSize);
+    chunk.chunk = calloc(chunkSize, sizeof(unsigned char));
     chunk.fileIdx = file->currentFileIdx; // Get the current file index
     chunk.isFinal = false;
     chunk.startPosition = file->currentPosition;
@@ -244,83 +249,36 @@ Chunk getChunk()
 
     FILE *fileS = file->currentFILE;
 
-    int startPostion = file->currentPosition;
     int endPosition = file->currentPosition + chunkSize;
     int bitsRead = 0;
-    int lastSeparator = 0;
-    bool inWord = false;
-    wchar_t wc;
-    int wordCount = 0;
 
-    while (!feof(fileS) && bitsRead < endPosition - startPostion)
-    {
-        unsigned char currentByte = fgetc(fileS);
-        int bytesCount = numOfBytesInUTF8(currentByte);
-        unsigned char currentChar[4] = {0, 0, 0, 0};
-        currentChar[0] = currentByte;
+    int bytesRead  = fread(chunk.chunk, sizeof(unsigned char), chunkSize, fileS);
 
-        if (bytesCount == -1)
-        {
-            bitsRead++;
-            if (inWord)
-            {
-                wordCount++;
-            }
-            inWord = 0;
-            continue;
-        }
-
-        if (bitsRead + bytesCount <= endPosition - startPostion)
-        {
-            chunk.chunk[bitsRead++] = currentByte;
-            for (int i = 1; i < bytesCount; i++)
-            {
-                currentByte = fgetc(fileS);
-                chunk.chunk[bitsRead++] = currentByte;
-                currentChar[i] = currentByte;
-            }
-        }
-        else
-        {
+    if (!feof(fileS)) {
+        // check if last char is in the middle of a utf8 char
+        while ((chunk.chunk[bytesRead - 1] & 0xC0) == 0x80)
+        {   
+            bytesRead--;
             fseek(fileS, -1, SEEK_CUR);
-            break;
+            
         }
 
-        convertBytesToWchar(currentChar, bytesCount, &wc);
-
-        if (isLetter(wc) || wc == L'’' || wc == L'‘' || wc == L'\'')
+        // check if last char is in the middle of a word
+        while(isLetter(chunk.chunk[bytesRead - 1]) || chunk.chunk[bytesRead - 1] == L'’' || chunk.chunk[bytesRead - 1] == L'‘' || chunk.chunk[bytesRead - 1] == L'\'')
         {
-            inWord = 1;
-        }
-        else
-        {
-            if (inWord)
-            {
-                lastSeparator = bitsRead;
-                wordCount++;
-            }
-            inWord = 0;
-        }
-    }
-
-    if (bitsRead >= endPosition - startPostion && (isLetter(wc) || wc == L'’' || wc == L'‘' || wc == L'\''))
-    {
-        fseek(fileS, lastSeparator - bitsRead, SEEK_CUR);
-
-        unsigned int diff = bitsRead - lastSeparator;
-
-        for (int i = 0; i < diff; i++) {
-            chunk.chunk[--bitsRead] = 0x00;
+            bytesRead--;
             fseek(fileS, -1, SEEK_CUR);
         }
-        if (inWord)
-        {
-            wordCount--;
-        }
-    }
 
+        memset(chunk.chunk + bytesRead, 0, chunkSize - bytesRead);
+
+        chunk.chunk[bytesRead] = '\0';
+        bitsRead = bytesRead;
+
+
+    }
     
-    printf("WordCount: %d\n", wordCount);
+    // printf("WordCount: %d\n", wordCount);
 
     file->currentPosition += bitsRead;
     chunk.endPosition = file->currentPosition;

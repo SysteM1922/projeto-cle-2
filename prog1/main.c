@@ -140,7 +140,6 @@ int main(int argc, char *argv[])
         // I get the chunks (perfected) and give them to the workers
 
         Chunk cChunk;
-        int fileIdx;
         ChunkResults *resultsArray[5000];
         MPI_Request *requests = calloc(5000 * 3, sizeof(MPI_Request));
         int nMessages = 0;
@@ -153,7 +152,7 @@ int main(int argc, char *argv[])
 
                 // get the perfected chunk
                 cChunk = getChunk();
-                fileIdx = cChunk.fileIdx;
+                // int fileIdx = cChunk.fileIdx;
                 // printf("\n\nDispatcher: Got chunk %d, fileIdx: %d\n", cChunk.fileIdx, fileIdx);
                 // printf("Dispatcher: Chunk start position: %d\n", cChunk.startPosition);
                 // printf("Dispatcher: Chunk end position: %d\n", cChunk.endPosition);
@@ -264,7 +263,6 @@ int main(int argc, char *argv[])
                 // printf("Worker %d: Received chunk, end position: %d\n", rank, receivedChunk->endPosition);
                 // printf("ChunkSize: %d\n", chunkSize);
 
-                ChunkResults results;
                 // >>>>>>>>>>>>>>>>> Process the chunk <<<<<<<<<<<<<<<<<<<<
 
                 ChunkResults res2 = processChunk(receivedChunk);
@@ -339,7 +337,7 @@ int main(int argc, char *argv[])
                 } */
 
                 // Send the results back to the dispatcher
-                results.fileIdx = receivedChunk->fileIdx;
+                res2.fileIdx = receivedChunk->fileIdx;
                 //results.wordsCount = wordCount;
                 //results.wordsWithConsonants = matchWords;
 

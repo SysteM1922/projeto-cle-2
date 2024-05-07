@@ -12,8 +12,6 @@
  * \author Guilherme Antunes - 103600
  */
 
-
-
 #include <stdlib.h>
 #include "workers.h"
 #include <stdlib.h>
@@ -21,7 +19,46 @@
 #include "utf8_utils.h"
 #include "utils.h"
 #include <string.h>
+#include <wchar.h>
+#include <wctype.h>
 
+/**
+ * \brief Checks if a character is a letter or underscore.
+ *
+ * \param c The wide character to check.
+ * \return 1 if the character is a letter or underscore, 0 otherwise.
+ */
+int isLetter(wchar_t c) {
+    return iswalnum(c) || c == L'_';
+}
+
+/**
+ * \brief Checks if a character is a consonant.
+ *
+ * \param c The wide character to check.
+ * \return 1 if the character is a consonant, 0 otherwise.
+ */
+int isConsonant(wchar_t c) {
+    return wcschr(L"bcdfghjklmnpqrstvwxyz", c) != NULL;
+}
+
+/**
+ * \brief Converts a complex letter to its simple form.
+ *
+ * \param letter The wide character to convert.
+ */
+void extractLetter(wchar_t *letter) {
+    *letter = towlower(*letter);
+    wchar_t *simpleLetters = L"c";
+    wchar_t *complexLetters = L"ç";
+ 
+    for (int i = 0; i < wcslen(complexLetters); i++) {
+        if (complexLetters[i] == *letter) {
+            *letter = simpleLetters[i];
+            break;
+        }
+    }
+}
 
 /**
  * \brief Checks if a character is a consonant.
@@ -35,7 +72,6 @@ bool is_consonant(int c)
 {
     return (c >= 0x61 && c <= 0x7a) && c != 0x61 && c != 0x65 && c != 0x69 && c != 0x6f && c != 0x75;
 }
-
 
 /**
  * \brief Checks if a word has at least two instances of the same consonant.
@@ -78,7 +114,6 @@ bool has_two_equal_consonants(int *word)
     return false;
 }
 
-
 /**
  * \brief Processes a chunk of data to count words and words with consonants.
  *
@@ -87,8 +122,8 @@ bool has_two_equal_consonants(int *word)
  * \param DataBlock The data chunk to process.
  * \return The results of processing the data chunk, including the number of words and the number of words with consonants.
  */
-ChunkResults processChunk(Chunk *DataBlock) {
-
+ChunkResults processChunk(Chunk *DataBlock)
+{
 
     unsigned char *data = DataBlock->chunk;
 
@@ -97,9 +132,12 @@ ChunkResults processChunk(Chunk *DataBlock) {
     filePartialResults.wordsCount = 0;
     filePartialResults.wordsWithConsonants = 0;
 
-    bool in_word = false;
-    int word[100]; // buffer to store the word
-    int wordIdx = 0;
+    bool inWord = false;
+    bool found = false;
+    wchar_t wc;
+    int word_len = 0;
+
+    wchar_t word[21];
 
     // get dataSize
     int dataSize = DataBlock->endPosition - DataBlock->startPosition;
@@ -117,57 +155,50 @@ ChunkResults processChunk(Chunk *DataBlock) {
                 bytes[j] = data[++i];
             }
         }
-        int codepoint = utf8_to_codepoint(bytes, char_size);
 
-        if (isAlphanumeric(codepoint))
+        convertBytesToWchar(bytes, char_size, &wc);
+
+        if (isLetter(wc))
         {
-            if (!in_word)
+            if (found)
             {
-                in_word = true;
-                wordIdx = 0;
-                filePartialResults.wordsCount++;
-            }
-
-            word[wordIdx++] = codepoint;
-        }
-        else if (isAggregationMark(codepoint))
-        {
-            if (!in_word)
                 continue;
-            word[wordIdx++] = codepoint;
-        }
-        else
-        {
-            if (in_word)
+            }
+            else
             {
-                in_word = false;
-                word[wordIdx] = '\0';
-
-                if (has_two_equal_consonants(word))
+                extractLetter(&wc);
+                if (!inWord)
                 {
-                    filePartialResults.wordsWithConsonants++;
+                    filePartialResults.wordsCount++;
+                    inWord = 1;
                 }
-
-                memset(word, 0, sizeof(word));
-                wordIdx = 0;
+                if (isConsonant(wc))
+                {
+                    for (int i = 0; i < word_len; i++)
+                    {
+                        if (word[i] == wc)
+                        {
+                            found = 1;
+                            filePartialResults.wordsWithConsonants++;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        word[word_len] = wc;
+                        word_len++;
+                    }
+                }
             }
         }
-    }
-
-    if (in_word)
-    {
-        word[wordIdx] = '\0';
-
-        if (has_two_equal_consonants(word))
+        else if (wc != L'’' && wc != L'‘' && wc != L'\'')
         {
-            filePartialResults.wordsWithConsonants++;
+            inWord = 0;
+            found = 0;
+            memset(word, '\0', sizeof(word));
+            word_len = 0;
         }
-
-        memset(word, 0, sizeof(word));
-        wordIdx = 0;
     }
 
     return filePartialResults;
-
-
 }

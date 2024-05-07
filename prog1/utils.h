@@ -20,4 +20,6 @@ long getFileSize(const char *fileName);
 
 bool isIn(unsigned int currentChar, char *consonants, int size);
 
+void convertBytesToWchar(unsigned char *bytes, size_t size, wchar_t *wc);
+
 #endif

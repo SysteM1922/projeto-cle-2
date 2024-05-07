@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <iconv.h>
 
 #include "dispatcher.h"
 #include "workers.h"
@@ -58,4 +59,29 @@ bool isIn(unsigned int currentChar, char *consonants, int size) {
         }
     }
     return false;
+}
+
+void convertBytesToWchar(unsigned char *bytes, size_t size, wchar_t *wc) {
+    // Abrir o descritor de conversão
+    iconv_t cd = iconv_open("WCHAR_T", "UTF-8");
+    if (cd == (iconv_t)-1) {
+        perror("iconv_open");
+        return;
+    }
+    
+    // Definir as variáveis para a conversão
+    size_t inbytesleft = size; // Tamanho da entrada em bytes
+    size_t outbytesleft = sizeof(wchar_t); // Tamanho da saída em bytes
+    char *inbuf = (char*)bytes;
+    char *outbuf = (char*)wc;
+    
+    // Converter bytes UTF-8 em um caractere amplo
+    if (iconv(cd, &inbuf, &inbytesleft, &outbuf, &outbytesleft) == (size_t)-1) {
+        perror("iconv");
+        iconv_close(cd);
+        return;
+    }
+    
+    // Fechar o descritor de conversão
+    iconv_close(cd);
 }

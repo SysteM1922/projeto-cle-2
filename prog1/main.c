@@ -71,48 +71,6 @@ int outside_word_array_size = sizeof(outside_word_chars) / sizeof(char);
  */
 static double get_delta_time(void);
 
-
-/**
- * \brief Checks if a character is a letter or underscore.
- *
- * \param c The wide character to check.
- * \return 1 if the character is a letter or underscore, 0 otherwise.
- */
-int isLetter(wchar_t c) {
-    return iswalnum(c) || c == L'_';
-}
-
-/**
- * \brief Checks if a character is a consonant.
- *
- * \param c The wide character to check.
- * \return 1 if the character is a consonant, 0 otherwise.
- */
-int isConsonant(wchar_t c) {
-    return wcschr(L"bcdfghjklmnpqrstvwxyz", c) != NULL;
-}
-
-
-
-/**
- * \brief Converts a complex letter to its simple form.
- *
- * \param letter The wide character to convert.
- */
-void extractLetter(wchar_t *letter) {
-    *letter = towlower(*letter);
-    wchar_t *simpleLetters = L"c";
-    wchar_t *complexLetters = L"ç";
- 
-    for (int i = 0; i < wcslen(complexLetters); i++) {
-        if (complexLetters[i] == *letter) {
-            *letter = simpleLetters[i];
-            break;
-        }
-    }
-}
-
-
 /**
  * \brief Main function for the parallel file processing application.
  *

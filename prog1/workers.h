@@ -15,6 +15,7 @@
 #define WORKER_H
 
 #include "dispatcher.h"
+#include <wchar.h>
 
 /**
  * \struct ChunkResults
@@ -64,5 +65,9 @@ bool is_consonant(int c);
  * \return true if the word has two equal consonants, false otherwise.
  */
 bool has_two_equal_consonants(int *word);
+
+int isLetter(wchar_t c);
+int isConsonant(wchar_t c);
+void extractLetter(wchar_t *letter);
 
 #endif

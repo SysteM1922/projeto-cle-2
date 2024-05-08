@@ -144,7 +144,7 @@ int setupFiles(int argc, char *argv[])
  * \param nProcesses The number of processes to be used for processing.
  * \return 0 on success, -1 on error.
  */
-int setupDispatcher(int numFiles, int nProcesses)
+int setupDispatcher(int numFiles)
 {
     // Allocate memory for file and FileData
     file = malloc(sizeof(File));
@@ -154,7 +154,7 @@ int setupDispatcher(int numFiles, int nProcesses)
         return -1;
     }
 
-    filesData = calloc(nProcesses, sizeof(FileData));
+    filesData = calloc(numFiles, sizeof(FileData));
     if (!filesData)
     {
         perror("Failed to allocate memory for filesData");
@@ -192,6 +192,7 @@ void aggregateResults(int fileIdx, int words, int consonants)
  */
 void printResults()
 {
+    printf("Num files: %d\n", filesInfo->nFiles);
     for (int i = 0; i < filesInfo->nFiles; i++)
     {
         printf("\nFileIdx: %d\n", filesData[i].fileIdx);

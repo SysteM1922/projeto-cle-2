@@ -105,15 +105,14 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    // start timer
-    get_delta_time();
-
     int chunkSize = getChunkSize(argc, argv);
     // printf("Chunk size: %d\n", chunkSize);
 
     // if im the dispatcher -> Non-blocking communication
     if (rank == 0)
     {
+        // start timer
+        get_delta_time();
         // printf("Number of processes: %d\n", nProcesses);
         // read the args; setup the files;  // Store information about files read (path and number of files)
         int numFiles = setupFiles(argc, argv);
@@ -125,7 +124,7 @@ int main(int argc, char *argv[])
         }
 
         // Call setupDispatcher with the number of files
-        if (setupDispatcher(numFiles, nProcesses) != 0)
+        if (setupDispatcher(numFiles) != 0)
         {
             fprintf(stderr, "Error setting up dispatcher\n");
             MPI_Finalize();
@@ -222,7 +221,6 @@ int main(int argc, char *argv[])
 
         // Now call MPI_Waitall with the correct count
         MPI_Waitall(nMessages * 3, requests, MPI_STATUSES_IGNORE);
-
         // aggregate results
         for (int i = 0; i < nMessages; i++)
         {
@@ -351,10 +349,12 @@ int main(int argc, char *argv[])
         } while (work);
 
         // Debug print
-        // printf("Worker %d: Finished processing chunks\n", rank);
+        //printf("Worker %d: Finished processing chunks\n", rank);
     }
 
     MPI_Finalize();
+
+    printf("Rank %d: Finalized MPI\n", rank);
 
     return EXIT_SUCCESS;
 }

@@ -92,7 +92,7 @@ int setupFiles(int argc, char *argv[]);
  * \param nProcesses The number of processes to be used for processing.
  * \return 0 on success, -1 on error.
  */
-int setupDispatcher(int numFiles, int nProcesses);
+int setupDispatcher(int numFiles);
 
 /**
  * \brief Retrieves the next chunk of data from the current file.
